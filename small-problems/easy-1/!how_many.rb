@@ -29,7 +29,11 @@ vehicles = [
 def count_occurrences(array)
   hash = array.to_h { |key| [key, 0] }
   array.each { |item| hash[item] += 1 }
-  hash.each { |k , v| puts "#{k} => #{v}" }
+  hash.each { |k, v| puts "#{k} => #{v}" }
 end
 
 count_occurrences(vehicles)
+
+# Further exploration:
+#
+# Try to solve the problem when words are case insensitive, e.g. 'suv' == 'SUV'

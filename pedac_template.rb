@@ -100,7 +100,7 @@ Find test cases with the following conditions:
 -  Upper case / lower case
 -  Data types
 
-As well as the following failurs and bad inputs:
+As well as the following failures and bad inputs:
 
 -  Raise exceptions / report errors
 -  Special values (`nil`, `0`, `""`, surrogate pairs, char. encoding, special
