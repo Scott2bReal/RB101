@@ -1,3 +1,5 @@
+require 'pry'
+
 # Problem:
 #
 # Write a method that takes one argument, a string containing one or more words,
@@ -16,4 +18,17 @@
 # Algorithm:
 #
 # Split string into array of words
-# Make new array of words 
+# For each word in array
+#   If word is > 4 characters
+#     Split into array of characters
+#     Reverse array
+#     Combine back into single string
+# Combine array back into single string
+
+def reverse_words(string)
+  string.split(' ').each { |word| word.reverse! if word.length > 4 }.join(' ')
+end
+
+puts reverse_words('Professional')          # => lanoisseforP
+puts reverse_words('Walk around the block') # => Walk dnuora the kcolb
+puts reverse_words('Launch School')         # => hcnuaL loohcS
