@@ -120,7 +120,7 @@ Style/NumericPredicate:
   Enabled: false
 
 Style/OneLineConditional:
-  Description: Favor the ternary operator(?:) over if/then/else/end constructs.
+  Description: Favor the ternry operator(?:) over if/then/else/end constructs.
   Enabled: false
 
 Naming/BinaryOperatorParameterName:
@@ -138,9 +138,9 @@ Style/PercentLiteralDelimiters:
   Description: 'Use `%`-literal delimiters consistently'
   Enabled: false
 
-#StylePerlBackrefs:
-  #Description: Avoid Perl-style regex back references.
-  #Enabled: false
+Style/PerlBackrefs:
+  Description: Avoid Perl-style regex back references.
+  Enabled: false
 
 Style/Proc:
   Description: Use proc instead of Proc.new.
