@@ -1,0 +1,6 @@
+en:
+  welcome: "Welcome to the Loan Calculator. Please enter your name"
+  invalid_name: "Please enter a valid name" 
+  loan_amount: "Please enter the total loan amount"
+  loan_duration: "Please enter the loan duration"
+  apr: "Please enter the Annual Percentage Rate"
