@@ -85,7 +85,7 @@ GET loan duration years SET years
 GET loan duration months SET months
 SET loan_duration = (years * 12) + months
 
-SET monthly_payment =  loan_amount * (monthly_interest / (1 - (1 +
+SET monthly_payment = loan_amount * (monthly_interest / (1 - (1 +
 monthly_interest)**(-loan_duration)))
 
 PRINT monthly_payment
