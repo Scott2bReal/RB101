@@ -10,7 +10,7 @@ RULES = {
   'lizard' => %w(spock paper)
 }
 
-score = {player: 0, computer: 0}
+score = { player: 0, computer: 0 }
 
 # Methods for to do stuff
 def prompt(message)
@@ -21,13 +21,21 @@ def win?(first, second)
   RULES[first].include?(second)
 end
 
-def display_results(player, computer)
+def outcome(player, computer)
   if win?(player, computer)
     'You won!'
   elsif win?(computer, player)
     'Computer won!'
   else
     "It's a tie"
+  end
+end
+
+def keep_score(result, tally)
+  if result == 'You won!'
+    tally[:player] += 1
+  elsif result == 'Computer won!'
+    tally[:computer] += 1
   end
 end
 
@@ -47,9 +55,9 @@ loop do
 
   prompt("You chose: #{choice}; Computer chose: #{computer_choice}")
 
-  puts results(choice, computer_choice)
+  puts outcome(choice, computer_choice)
 
-
+  keep_score(outcome(choice, computer_choice), score)
 
   prompt('Do you want to play again?')
   answer = gets.chomp
