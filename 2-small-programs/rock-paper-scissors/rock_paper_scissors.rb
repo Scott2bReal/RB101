@@ -1,13 +1,13 @@
 # Some variables for use later
 
-VALID_CHOICES = %w(rock paper scissors spock lizard)
+VALID_CHOICES = %w(Rock Paper Scissors Spock Lizard)
 
 RULES = {
-  'rock' => %w(lizard scissors),
-  'paper' => %w(rock spock),
-  'scissors' => %w(paper lizard),
-  'spock' => %w(rock scissors),
-  'lizard' => %w(spock paper)
+  'Rock' => %w(Lizard Scissors),
+  'Paper' => %w(Rock Spock),
+  'Scissors' => %w(Paper Lizard),
+  'Spock' => %w(Rock Scissors),
+  'Lizard' => %w(Spock Paper)
 }
 
 score = { player: 0, computer: 0 }
@@ -42,14 +42,33 @@ end
 
 def translate_choice(str)
   case str
-  when '1' then 'rock'
-  when '2' then 'paper'
-  when '3' then 'scissors'
-  when '4' then 'spock'
-  when '5' then 'lizard'
+  when '1' then 'Rock'
+  when '2' then 'Paper'
+  when '3' then 'Scissors'
+  when '4' then 'Spock'
+  when '5' then 'Lizard'
   end
 end
 
+def play_again?
+  prompt('Play again? y for yes')
+  answer = gets.chomp
+  answer.downcase == 'y'
+end
+
+def greeting
+  prompt("Welcome to Rock Paper Scissors Spock Lizard!")
+  prompt("You will be playing the computer. First to 3 wins is the victor")
+  print "\n"
+end
+
+def new_game(score)
+  score[:player] = 0
+  score[:computer] = 0
+  system('clear')
+end
+
+greeting
 loop do
   choice = ''
   loop do
@@ -79,10 +98,14 @@ loop do
 
   if score[:player] == 3
     prompt('You win the match! Congratulations!')
-    break
+    break unless play_again?
+    new_game(score)
+    greeting
   elsif score[:computer] == 3
     prompt('The computer wins! Better luck next time.')
-    break
+    break unless play_again?
+    new_game(score)
+    greeting
   end
 end
 
