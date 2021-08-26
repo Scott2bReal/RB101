@@ -61,7 +61,7 @@ loop do
     if VALID_CHOICES.include?(choice)
       break
     else
-      prompt("That's not a valid choice")
+      prompt("That's not a valid choice (select using 1-5)")
     end
   end
 
