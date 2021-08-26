@@ -41,23 +41,17 @@ def keep_score(result, tally)
 end
 
 def translate_choice(str)
-  if str.start_with?('r')
-    'rock'
-  elsif str.start_with?('p')
-    'paper'
-  elsif str.start_with?('sc')
-    'scissors'
-  elsif str.start_with?('sp')
-    'spock'
-  elsif str.start_with?('l')
-    'lizard'
-  end
+  return 'rock' if str == '1'
+  return 'paper' if str == '2'
+  return 'scissors' if str == '3'
+  return 'spock' if str == '4'
+  return 'lizard' if str == '5'
 end
 
 loop do
   choice = ''
   loop do
-    prompt("Choose one: #{VALID_CHOICES.join(', ')}")
+    prompt("Choose one: 1) Rock 2) Paper 3) Scissors 4) Spock 5) Lizard")
 
     choice = translate_choice(gets.chomp)
 
