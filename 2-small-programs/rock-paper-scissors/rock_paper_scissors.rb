@@ -13,6 +13,7 @@ RULES = {
 score = { player: 0, computer: 0 }
 
 # Methods for to do stuff
+
 def prompt(message)
   puts("=> #{message}")
 end
@@ -39,11 +40,27 @@ def keep_score(result, tally)
   end
 end
 
+def translate_choice(str)
+  if str.start_with?('r')
+    'rock'
+  elsif str.start_with?('p')
+    'paper'
+  elsif str.start_with?('sc')
+    'scissors'
+  elsif str.start_with?('sp')
+    'spock'
+  elsif str.start_with?('l')
+    'lizard'
+  end
+end
+
 loop do
   choice = ''
   loop do
     prompt("Choose one: #{VALID_CHOICES.join(', ')}")
-    choice = gets.chomp
+
+    choice = translate_choice(gets.chomp)
+
     if VALID_CHOICES.include?(choice)
       break
     else
@@ -55,13 +72,21 @@ loop do
 
   prompt("You chose: #{choice}; Computer chose: #{computer_choice}")
 
-  puts outcome(choice, computer_choice)
+  winner = outcome(choice, computer_choice)
 
-  keep_score(outcome(choice, computer_choice), score)
+  prompt(winner)
 
-  prompt('Do you want to play again?')
-  answer = gets.chomp
-  break unless answer.downcase.start_with?('y')
+  keep_score(winner, score)
+
+  prompt("The score is Player: #{score[:player]} Computer: #{score[:computer]}")
+
+  if score[:player] == 3
+    prompt('You win the match! Congratulations!')
+    break
+  elsif score[:computer] == 3
+    prompt('The computer wins! Better luck next time.')
+    break
+  end
 end
 
 prompt('Thanks for playing. Good bye!')
