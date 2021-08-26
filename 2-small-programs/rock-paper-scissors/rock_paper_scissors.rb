@@ -41,16 +41,19 @@ def keep_score(result, tally)
 end
 
 def translate_choice(str)
-  return 'rock' if str == '1'
-  return 'paper' if str == '2'
-  return 'scissors' if str == '3'
-  return 'spock' if str == '4'
-  return 'lizard' if str == '5'
+  case str
+  when '1' then 'rock'
+  when '2' then 'paper'
+  when '3' then 'scissors'
+  when '4' then 'spock'
+  when '5' then 'lizard'
+  end
 end
 
 loop do
   choice = ''
   loop do
+    # Should maybe instruct user to use the number?
     prompt("Choose one: 1) Rock 2) Paper 3) Scissors 4) Spock 5) Lizard")
 
     choice = translate_choice(gets.chomp)
