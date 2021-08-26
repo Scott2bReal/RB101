@@ -65,6 +65,5 @@ IF operation = p
 PRINT result
 
 SUBPROCESS sum(num)
-WHILE counter <= num
-  sum = sum + counter
-  
+RETURN num if num <= 1
+RETURN num + sum(num - 1)
