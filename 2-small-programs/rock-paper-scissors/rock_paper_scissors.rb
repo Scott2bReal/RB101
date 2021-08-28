@@ -1,5 +1,3 @@
-# Some variables for use later
-
 VALID_CHOICES = %w(Rock Paper Scissors Spock Lizard)
 
 RULES = {
@@ -11,8 +9,6 @@ RULES = {
 }
 
 score = { player: 0, computer: 0 }
-
-# Methods for to do stuff
 
 def prompt(message)
   puts("=> #{message}")
@@ -72,7 +68,6 @@ greeting
 loop do
   choice = ''
   loop do
-    # Should maybe instruct user to use the number?
     prompt("Choose one: 1) Rock 2) Paper 3) Scissors 4) Spock 5) Lizard")
 
     choice = translate_choice(gets.chomp)
