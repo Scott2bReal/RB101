@@ -22,16 +22,16 @@ def outcome(player, computer)
   if win?(player, computer)
     'You won!'
   elsif win?(computer, player)
-    'Computer won!'
+    'The computer won!'
   else
     "It's a tie"
   end
 end
 
-def keep_score(result, tally)
+def update_score(result, tally)
   if result == 'You won!'
     tally[:player] += 1
-  elsif result == 'Computer won!'
+  elsif result == 'The computer won!'
     tally[:computer] += 1
   end
 end
@@ -47,9 +47,14 @@ def translate_choice(str)
 end
 
 def play_again?
-  prompt('Press y to play again, or any key to exit')
-  answer = gets.chomp
-  answer.downcase == 'y'
+  loop do
+    prompt('Press y to play again, or press n to exit')
+    print "=> "
+    answer = gets.chomp
+    return true if answer.downcase == 'y'
+    return false if answer.downcase == 'n'
+    prompt("Sorry, that wasn't a valid choice")
+  end
 end
 
 def greeting
@@ -64,9 +69,22 @@ def new_game(score)
   system('clear')
 end
 
+def display_choices
+  <<-MSG
+  Choose one of the following:
+  1) Rock
+  2) Paper
+  3) Scissors
+  4) Spock
+  5) Lizard
+
+  MSG
+end
+
 def player_choice
   loop do
-    prompt("Choose one: 1) Rock 2) Paper 3) Scissors 4) Spock 5) Lizard")
+    prompt(display_choices)
+    print '=> '
 
     choice = translate_choice(gets.chomp)
 
@@ -86,13 +104,13 @@ loop do
 
   computer_choice = VALID_CHOICES.sample()
 
-  prompt("You chose: #{choice}; Computer chose: #{computer_choice}")
+  prompt("You chose: #{choice}; The computer chose: #{computer_choice}")
 
   winner = outcome(choice, computer_choice)
 
-  prompt(winner)
+  prompt("** #{winner} **")
 
-  keep_score(winner, score)
+  update_score(winner, score)
 
   prompt("The score is Player: #{score[:player]} Computer: #{score[:computer]}")
 
