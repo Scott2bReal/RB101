@@ -1,5 +1,3 @@
-VALID_CHOICES = %w(Rock Paper Scissors Spock Lizard)
-
 RULES = {
   'Rock' => %w(Lizard Scissors),
   'Paper' => %w(Rock Spock),
@@ -7,6 +5,8 @@ RULES = {
   'Spock' => %w(Rock Scissors),
   'Lizard' => %w(Spock Paper)
 }
+
+VALID_CHOICES = RULES.keys
 
 score = { player: 0, computer: 0 }
 
@@ -47,7 +47,7 @@ def translate_choice(str)
 end
 
 def play_again?
-  prompt('Play again? y for yes')
+  prompt('Press y to play again, or any key to exit')
   answer = gets.chomp
   answer.downcase == 'y'
 end
@@ -64,20 +64,25 @@ def new_game(score)
   system('clear')
 end
 
-greeting
-loop do
-  choice = ''
+def player_choice
   loop do
     prompt("Choose one: 1) Rock 2) Paper 3) Scissors 4) Spock 5) Lizard")
 
     choice = translate_choice(gets.chomp)
 
     if VALID_CHOICES.include?(choice)
-      break
+      return choice
     else
       prompt("That's not a valid choice (select using 1-5)")
     end
   end
+end
+
+# Game starts here
+system('clear')
+greeting
+loop do
+  choice = player_choice
 
   computer_choice = VALID_CHOICES.sample()
 
