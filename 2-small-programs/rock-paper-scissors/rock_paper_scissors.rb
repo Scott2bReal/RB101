@@ -8,8 +8,6 @@ RULES = {
 
 VALID_CHOICES = RULES.keys
 
-score = { player: 0, computer: 0 }
-
 def prompt(message)
   puts("=> #{message}")
 end
@@ -99,6 +97,7 @@ end
 # Game starts here
 system('clear')
 greeting
+score = { player: 0, computer: 0 }
 loop do
   choice = player_choice
 
