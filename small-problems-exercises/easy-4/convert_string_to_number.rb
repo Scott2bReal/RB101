@@ -1,6 +1,6 @@
 def string_to_integer(string)
   digits = string.split('').map { |digit| inspector(digit) }
-  digits.each_with_index { |idx, digit| digit * (10**(idx + 1)) }.sum
+  digits.reverse!.map { |digit| digit * (10**digits.find_index(digit)) }.sum
 end
 
 def inspector(number)
