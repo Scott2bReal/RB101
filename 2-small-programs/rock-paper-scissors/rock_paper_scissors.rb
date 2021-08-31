@@ -1,45 +1,70 @@
-# Up top because RULES needs this
-def who_beats_who
-  <<-MSG
-  Here are the rules:
-
-  Scissors cuts paper. Paper covers rock. Rock crushes lizard. Lizard poisons
-  Spock. Spock smashes scissors. Scissors decapitates lizard. Lizard eats paper.
-  Paper disproves Spock. Spock vaporizes rock. Rock crushes scissors.
-
-  MSG
-end
-
-MAX_WINS = 3
-
 RULES = {
-  'explanation' => who_beats_who,
-  'choices' => {
-    'Rock' => %w(Lizard Scissors),
-    'Paper' => %w(Rock Spock),
-    'Scissors' => %w(Paper Lizard),
-    'Spock' => %w(Rock Scissors),
-    'Lizard' => %w(Spock Paper)
-  }
+  'Rock' => %w(Lizard Scissors),
+  'Paper' => %w(Rock Spock),
+  'Scissors' => %w(Paper Lizard),
+  'Spock' => %w(Rock Scissors),
+  'Lizard' => %w(Spock Paper)
 }
 
-VALID_CHOICES = RULES['choices'].keys
-
-WINNER_MESSAGE = {
-  player: 'You win the match, congratulations!',
-  computer: 'The computer wins the match! Better luck next time.'
-}
+VALID_CHOICES = RULES.keys
 
 def prompt(message)
   puts("=> #{message}")
+end
+
+def win?(first, second)
+  RULES[first].include?(second)
+end
+
+def outcome(player, computer)
+  if win?(player, computer)
+    'You won!'
+  elsif win?(computer, player)
+    'The computer won!'
+  else
+    "It's a tie"
+  end
+end
+
+def update_score(result, tally)
+  if result == 'You won!'
+    tally[:player] += 1
+  elsif result == 'The computer won!'
+    tally[:computer] += 1
+  end
+end
+
+def translate_choice(str)
+  case str
+  when '1' then 'Rock'
+  when '2' then 'Paper'
+  when '3' then 'Scissors'
+  when '4' then 'Spock'
+  when '5' then 'Lizard'
+  end
+end
+
+def play_again?
+  loop do
+    prompt('Press y to play again, or press n to exit')
+    print "=> "
+    answer = gets.chomp
+    return true if answer.downcase == 'y'
+    return false if answer.downcase == 'n'
+    prompt("Sorry, that wasn't a valid choice")
+  end
 end
 
 def greeting
   prompt("Welcome to Rock Paper Scissors Spock Lizard!")
   prompt("You will be playing the computer. First to 3 wins is the victor")
   print "\n"
-  prompt(RULES['explanation'])
-  print "\n"
+end
+
+def new_game(score)
+  score[:player] = 0
+  score[:computer] = 0
+  system('clear')
 end
 
 def display_choices
@@ -52,16 +77,6 @@ def display_choices
   5) Lizard
 
   MSG
-end
-
-def new_round
-  system('clear')
-  greeting
-end
-
-def print_last_round_results(player, computer, winner)
-  prompt("You chose: #{player}; The computer chose: #{computer}")
-  prompt("** #{winner} **")
 end
 
 def player_choice
@@ -79,61 +94,6 @@ def player_choice
   end
 end
 
-def translate_choice(str)
-  case str
-  when '1' then 'Rock'
-  when '2' then 'Paper'
-  when '3' then 'Scissors'
-  when '4' then 'Spock'
-  when '5' then 'Lizard'
-  end
-end
-
-def win?(first, second)
-  RULES['choices'][first].include?(second)
-end
-
-def outcome(player, computer)
-  if player == computer
-    "It's a tie"
-  elsif win?(player, computer)
-    'You won!'
-  else
-    'The computer won!'
-  end
-end
-
-def update_score(result, tally)
-  if result == 'You won!'
-    tally[:player] += 1
-  elsif result == 'The computer won!'
-    tally[:computer] += 1
-  end
-end
-
-def play_again?
-  loop do
-    prompt('Press y to play again, or press n to exit')
-    print "=> "
-    answer = gets.chomp
-    return true if answer.downcase == 'y'
-    return false if answer.downcase == 'n'
-    prompt("Sorry, that wasn't a valid choice")
-  end
-end
-
-def ultimate_winner(score)
-  return WINNER_MESSAGE[:player] if score[:player] == MAX_WINS
-  return WINNER_MESSAGE[:computer] if score[:computer] == MAX_WINS
-  nil
-end
-
-def new_game(score)
-  score[:player] = 0
-  score[:computer] = 0
-  new_round
-end
-
 # Game starts here
 system('clear')
 greeting
@@ -143,20 +103,26 @@ loop do
 
   computer_choice = VALID_CHOICES.sample()
 
+  prompt("You chose: #{choice}; The computer chose: #{computer_choice}")
+
   winner = outcome(choice, computer_choice)
+
+  prompt("** #{winner} **")
 
   update_score(winner, score)
 
-  new_round
-
-  print_last_round_results(choice, computer_choice, winner)
-
   prompt("The score is Player: #{score[:player]} Computer: #{score[:computer]}")
 
-  if ultimate_winner(score)
-    puts ultimate_winner(score)
+  if score[:player] == 3
+    prompt('You win the match! Congratulations!')
     break unless play_again?
     new_game(score)
+    greeting
+  elsif score[:computer] == 3
+    prompt('The computer wins! Better luck next time.')
+    break unless play_again?
+    new_game(score)
+    greeting
   end
 end
 
