@@ -1,5 +1,5 @@
 # Up top because RULES needs this
-def who_beats_who
+WHO_BEATS_WHO =
   <<-MSG
   Here are the rules:
 
@@ -8,12 +8,11 @@ def who_beats_who
   Paper disproves Spock. Spock vaporizes rock. Rock crushes scissors.
 
   MSG
-end
 
 MAX_WINS = 3
 
 RULES = {
-  'explanation' => who_beats_who,
+  'explanation' => WHO_BEATS_WHO,
   'choices' => {
     'Rock' => %w(Lizard Scissors),
     'Paper' => %w(Rock Spock),
