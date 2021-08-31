@@ -14,14 +14,16 @@ MAX_WINS = 3
 
 RULES = {
   'explanation' => who_beats_who,
-  'Rock' => %w(Lizard Scissors),
-  'Paper' => %w(Rock Spock),
-  'Scissors' => %w(Paper Lizard),
-  'Spock' => %w(Rock Scissors),
-  'Lizard' => %w(Spock Paper)
+  'choices' => {
+    'Rock' => %w(Lizard Scissors),
+    'Paper' => %w(Rock Spock),
+    'Scissors' => %w(Paper Lizard),
+    'Spock' => %w(Rock Scissors),
+    'Lizard' => %w(Spock Paper)
+  }
 }
 
-VALID_CHOICES = RULES.keys
+VALID_CHOICES = RULES['choices'].keys
 
 WINNER_MESSAGE = {
   player: 'You win the match, congratulations!',
@@ -57,6 +59,11 @@ def new_round
   greeting
 end
 
+def print_last_round_results(player, computer, winner)
+  prompt("You chose: #{player}; The computer chose: #{computer}")
+  prompt("** #{winner} **")
+end
+
 def player_choice
   loop do
     prompt(display_choices)
@@ -83,16 +90,16 @@ def translate_choice(str)
 end
 
 def win?(first, second)
-  RULES[first].include?(second)
+  RULES['choices'][first].include?(second)
 end
 
 def outcome(player, computer)
-  if win?(player, computer)
-    'You won!'
-  elsif win?(computer, player)
-    'The computer won!'
-  else
+  if player == computer
     "It's a tie"
+  elsif win?(player, computer)
+    'You won!'
+  else
+    'The computer won!'
   end
 end
 
@@ -136,15 +143,13 @@ loop do
 
   computer_choice = VALID_CHOICES.sample()
 
-  prompt("You chose: #{choice}; The computer chose: #{computer_choice}")
-
   winner = outcome(choice, computer_choice)
 
   update_score(winner, score)
 
   new_round
 
-  prompt("** #{winner} **")
+  print_last_round_results(choice, computer_choice, winner)
 
   prompt("The score is Player: #{score[:player]} Computer: #{score[:computer]}")
 
