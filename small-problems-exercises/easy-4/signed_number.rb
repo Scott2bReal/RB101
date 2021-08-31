@@ -8,5 +8,21 @@ def string_to_integer(string)
   digits.reverse!.map { |digit| digit * (10**digits.find_index(digit)) }.sum
 end
 
-puts string_to_integer('4321') == 4321
-puts string_to_integer('570') == 570
+def string_to_signed_integer(string)
+  if string.start_with?('+', '-')
+    sign = string.split('').shift
+    string[0] = ''
+  end
+
+  final = string_to_integer
+
+  if sign == '-'
+    final - final * 2
+  else
+    final
+  end
+end
+
+puts string_to_signed_integer('4321') == 4321
+puts string_to_signed_integer('-570') == -570
+puts string_to_signed_integer('+100') == 100

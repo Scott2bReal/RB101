@@ -8,9 +8,13 @@ DIGITS = {
   'e' => 14, 'E' => 14, 'f' => 15, 'F' => 15
 }
 
-def string_to_integer(string)
+uef string_to_integer(string)
   digits = string.split('').map { |digit| DIGITS[digit] }
   digits.reverse!.map { |digit| digit * (10**digits.find_index(digit)) }.sum
+end
+
+def hexadecimal_to_integer(string)
+
 end
 
 # def inspector(number)
@@ -30,3 +34,4 @@ end
 
 puts string_to_integer('4321') == 4321
 puts string_to_integer('570') == 570
+puts hexadecimal_to_integer('4D9f') == 19871
