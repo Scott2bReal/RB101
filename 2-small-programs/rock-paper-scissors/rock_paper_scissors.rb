@@ -1,4 +1,19 @@
+# Up top because RULES needs this
+def who_beats_who
+  <<-MSG
+  Here are the rules:
+
+  Scissors cuts paper. Paper covers rock. Rock crushes lizard. Lizard poisons
+  Spock. Spock smashes scissors. Scissors decapitates lizard. Lizard eats paper.
+  Paper disproves Spock. Spock vaporizes rock. Rock crushes scissors.
+
+  MSG
+end
+
+MAX_WINS = 3
+
 RULES = {
+  'explanation' => who_beats_who,
   'Rock' => %w(Lizard Scissors),
   'Paper' => %w(Rock Spock),
   'Scissors' => %w(Paper Lizard),
@@ -8,8 +23,63 @@ RULES = {
 
 VALID_CHOICES = RULES.keys
 
+WINNER_MESSAGE = {
+  player: 'You win the match, congratulations!',
+  computer: 'The computer wins the match! Better luck next time.'
+}
+
 def prompt(message)
   puts("=> #{message}")
+end
+
+def greeting
+  prompt("Welcome to Rock Paper Scissors Spock Lizard!")
+  prompt("You will be playing the computer. First to 3 wins is the victor")
+  print "\n"
+  prompt(RULES['explanation'])
+  print "\n"
+end
+
+def display_choices
+  <<-MSG
+  Choose one of the following:
+  1) Rock
+  2) Paper
+  3) Scissors
+  4) Spock
+  5) Lizard
+
+  MSG
+end
+
+def new_round
+  system('clear')
+  greeting
+end
+
+def player_choice
+  loop do
+    prompt(display_choices)
+    print '=> '
+
+    choice = translate_choice(gets.chomp)
+
+    if VALID_CHOICES.include?(choice)
+      return choice
+    else
+      prompt("That's not a valid choice (select using 1-5)")
+    end
+  end
+end
+
+def translate_choice(str)
+  case str
+  when '1' then 'Rock'
+  when '2' then 'Paper'
+  when '3' then 'Scissors'
+  when '4' then 'Spock'
+  when '5' then 'Lizard'
+  end
 end
 
 def win?(first, second)
@@ -34,16 +104,6 @@ def update_score(result, tally)
   end
 end
 
-def translate_choice(str)
-  case str
-  when '1' then 'Rock'
-  when '2' then 'Paper'
-  when '3' then 'Scissors'
-  when '4' then 'Spock'
-  when '5' then 'Lizard'
-  end
-end
-
 def play_again?
   loop do
     prompt('Press y to play again, or press n to exit')
@@ -55,43 +115,16 @@ def play_again?
   end
 end
 
-def greeting
-  prompt("Welcome to Rock Paper Scissors Spock Lizard!")
-  prompt("You will be playing the computer. First to 3 wins is the victor")
-  print "\n"
+def ultimate_winner(score)
+  return WINNER_MESSAGE[:player] if score[:player] == MAX_WINS
+  return WINNER_MESSAGE[:computer] if score[:computer] == MAX_WINS
+  nil
 end
 
 def new_game(score)
   score[:player] = 0
   score[:computer] = 0
-  system('clear')
-end
-
-def display_choices
-  <<-MSG
-  Choose one of the following:
-  1) Rock
-  2) Paper
-  3) Scissors
-  4) Spock
-  5) Lizard
-
-  MSG
-end
-
-def player_choice
-  loop do
-    prompt(display_choices)
-    print '=> '
-
-    choice = translate_choice(gets.chomp)
-
-    if VALID_CHOICES.include?(choice)
-      return choice
-    else
-      prompt("That's not a valid choice (select using 1-5)")
-    end
-  end
+  new_round
 end
 
 # Game starts here
@@ -107,22 +140,18 @@ loop do
 
   winner = outcome(choice, computer_choice)
 
-  prompt("** #{winner} **")
-
   update_score(winner, score)
+
+  new_round
+
+  prompt("** #{winner} **")
 
   prompt("The score is Player: #{score[:player]} Computer: #{score[:computer]}")
 
-  if score[:player] == 3
-    prompt('You win the match! Congratulations!')
+  if ultimate_winner(score)
+    puts ultimate_winner(score)
     break unless play_again?
     new_game(score)
-    greeting
-  elsif score[:computer] == 3
-    prompt('The computer wins! Better luck next time.')
-    break unless play_again?
-    new_game(score)
-    greeting
   end
 end
 
