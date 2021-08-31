@@ -42,7 +42,7 @@ def greeting
   print "\n"
 end
 
-def display_choices
+def choices_message
   <<-MSG
   Choose one of the following:
   1) Rock
@@ -66,7 +66,7 @@ end
 
 def player_choice
   loop do
-    prompt(display_choices)
+    prompt(choices_message)
     print '=> '
 
     choice = translate_choice(gets.chomp)
