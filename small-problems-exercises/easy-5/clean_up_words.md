@@ -27,4 +27,6 @@ Array
 
 ## Algorithm
 
-
+Search string for characters that are not letters
+If character is not letter, change to a space
+Squeeze string to get rid of extra spaces
