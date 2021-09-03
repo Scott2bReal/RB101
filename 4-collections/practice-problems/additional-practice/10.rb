@@ -1,3 +1,4 @@
+require 'pry'
 # Given the munsters hash below
 
 munsters = {
@@ -29,5 +30,23 @@ Output: munsters hash with age group k, v pair added
 Data Structure: Hash
 
 Algorithm:
-  - For each key in munsters
-    - 
+  - For each key in munsters |name|
+    - Set variable age = munsters[name]['age']
+    - set munsters[name]['age_group'] = age_group(age)
+
+=end
+
+KID = (0..17)
+ADULT = (0..64)
+
+def age_group(age)
+  return 'kid' if KID.include?(age)
+  return 'adult' if ADULT.include?(age)
+  'senior'
+end
+
+munsters.each do |name, _|
+  munsters[name]['age_group'] = age_group(munsters[name]['age'])
+end
+
+puts munsters
