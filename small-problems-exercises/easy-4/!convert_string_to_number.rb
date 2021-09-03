@@ -8,7 +8,7 @@ DIGITS = {
   'e' => 14, 'E' => 14, 'f' => 15, 'F' => 15
 }
 
-uef string_to_integer(string)
+def string_to_integer(string)
   digits = string.split('').map { |digit| DIGITS[digit] }
   digits.reverse!.map { |digit| digit * (10**digits.find_index(digit)) }.sum
 end
