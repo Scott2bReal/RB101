@@ -1,10 +1,14 @@
-# def cleanup(string)
-#   chars = string.chars.map do |char|
-#     char = ' ' if char.match?(/[^a-z]/)
-#     char
-#   end
-#   chars.join.squeeze(' ')
-# end
+=begin
+
+def cleanup(string)
+  chars = string.chars.map do |char|
+    char = ' ' if char.match?(/[^a-z]/)
+    char
+  end
+  chars.join.squeeze(' ')
+end
+
+=end
 
 # Better solution from the book, using gsub instead of map
 
