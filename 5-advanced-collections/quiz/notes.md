@@ -36,4 +36,6 @@ hash assignment.
 
 ## Option 3
 
+- Same as 1 but with correct data structures. Will work!
+
 
