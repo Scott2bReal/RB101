@@ -38,4 +38,9 @@ hash assignment.
 
 - Same as 1 but with correct data structures. Will work!
 
+## Question 9
 
+### Option 1
+
+- Line 1 - Initialize all_orders to return of method call (map) on
+  customer_orders 
