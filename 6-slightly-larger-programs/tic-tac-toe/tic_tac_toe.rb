@@ -1,6 +1,4 @@
-require 'pry'
-
-EXPLANATION = 
+EXPLANATION =
   <<-MSG
   ---
   Tic Tac Toe is a 2 player game played on a 3x3 board. Each player takes a turn
@@ -42,17 +40,17 @@ def new_round
 end
 
 def display_board(board)
-box = <<-MSG
-*---+---+---*
-| #{board[:squares][1]} | #{board[:squares][2]} | #{board[:squares][3]} |
-|---|---|---|
-| #{board[:squares][4]} | #{board[:squares][5]} | #{board[:squares][6]} |
-|---|---|---|
-| #{board[:squares][7]} | #{board[:squares][8]} | #{board[:squares][9]} |
-*---+---+---*
+  box = <<-MSG
+  *---+---+---*
+  | #{board[:squares][1]} | #{board[:squares][2]} | #{board[:squares][3]} |
+  |---|---|---|
+  | #{board[:squares][4]} | #{board[:squares][5]} | #{board[:squares][6]} |
+  |---|---|---|
+  | #{board[:squares][7]} | #{board[:squares][8]} | #{board[:squares][9]} |
+  *---+---+---*
 
-MSG
-puts box
+  MSG
+  puts box
 end
 
 def user_move(board_state)
@@ -77,7 +75,7 @@ def validate_choice(choice, board_state)
   square = board_state[:squares][choice.to_i]
   return 'bad' unless choice.match?(/[1-9]/) && choice.size == 1
   return 'filled' if square == 'X' || square == 'O'
-  return 'good'
+  'good'
 end
 
 def update_filled_squares(board, choice, player, user_squares, computer_squares)
@@ -145,24 +143,24 @@ end
 
 # Game starts here
 loop do
-board_status = { 
-  :squares => {
-  1 => '1',
-  2 => '2',
-  3 => '3',
-  4 => '4',
-  5 => '5',
-  6 => '6',
-  7 => '7',
-  8 => '8',
-  9 => '9'
-  },
-  :filled => 0
-}
-user_squares = []
-computer_squares = []
-player_wins = false
-computer_wins = false
+  board_status = {
+    squares: {
+      1 => '1',
+      2 => '2',
+      3 => '3',
+      4 => '4',
+      5 => '5',
+      6 => '6',
+      7 => '7',
+      8 => '8',
+      9 => '9'
+    },
+    filled: 0
+  }
+  user_squares = []
+  computer_squares = []
+  player_wins = false
+  computer_wins = false
 
   loop do
     new_round
@@ -171,36 +169,27 @@ computer_wins = false
 
     user_choice = user_move(board_status)
 
-    update_filled_squares(board_status, user_choice, 'player', user_squares, computer_squares)
+    update_filled_squares(board_status, user_choice, 'player', user_squares,
+                          computer_squares)
 
     update_board(board_status, user_choice, 'X')
 
-    break if board_full?(board_status[:filled])
-
     player_wins = player_wins?(user_squares)
+
+    break if board_full?(board_status[:filled])
 
     break if player_wins
 
     computer_choice = computer_move(board_status)
 
-    update_filled_squares(board_status, computer_choice, 'computer', user_squares, computer_squares)
+    update_filled_squares(board_status, computer_choice, 'computer',
+                          user_squares, computer_squares)
 
     update_board(board_status, computer_choice, 'O')
 
     computer_wins = computer_wins?(computer_squares)
 
     break if computer_wins
-
-#     if winner?
-#       display_winner
-#       break
-#     elsif board_full?
-#       display_tie
-#       break
-#     end
-#   end
-#   break unless play_again?
-#   new_round
   end
   new_round
 
