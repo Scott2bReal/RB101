@@ -78,9 +78,13 @@ def validate_choice(choice, board_state)
   'good'
 end
 
-def update_filled_squares(board, choice, player, user_squares, computer_squares)
-  user_squares << choice if player == 'player'
-  computer_squares << choice if player == 'computer'
+def update_player_squares(board, choice, player_squares)
+  player_squares << choice
+  board[:filled] += 1
+end
+
+def update_computer_squares(board, choice, computer_squares)
+  computer_squares << choice
   board[:filled] += 1
 end
 
@@ -169,8 +173,7 @@ loop do
 
     user_choice = user_move(board_status)
 
-    update_filled_squares(board_status, user_choice, 'player', user_squares,
-                          computer_squares)
+    update_player_squares(board_status, user_choice, user_squares)
 
     update_board(board_status, user_choice, 'X')
 
@@ -182,8 +185,7 @@ loop do
 
     computer_choice = computer_move(board_status)
 
-    update_filled_squares(board_status, computer_choice, 'computer',
-                          user_squares, computer_squares)
+    update_computer_squares(board_status, computer_choice, computer_squares)
 
     update_board(board_status, computer_choice, 'O')
 
