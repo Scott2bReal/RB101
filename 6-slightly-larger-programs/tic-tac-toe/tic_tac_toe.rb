@@ -101,19 +101,19 @@ def computer_move(board_state)
 end
 
 def player_wins?(player)
-  player_wins = false
+  wins = false
   WINNING_COMBOS.each do |combo|
-    player.sort.combination(3) { |perm| player_wins = true if perm == combo }
+    player.sort.combination(3) { |perm| wins = true if perm == combo }
   end
-  player_wins
+  wins
 end
 
 def computer_wins?(computer)
-  computer_wins = false
+  wins = false
   WINNING_COMBOS.each do |combo|
-    computer.sort.combination(3) { |perm| computer_wins = true if perm == combo }
+    computer.sort.combination(3) { |perm| wins = true if perm == combo }
   end
-  computer_wins
+  wins
 end
 
 def board_full?(filled)
