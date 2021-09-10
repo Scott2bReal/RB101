@@ -353,4 +353,4 @@ Style/InverseMethods:
 
 Style/ZeroLengthPredicate:
   Description: 'empty? instead of length == 0'
-  Enabled: falsed
+  Enabled: false
