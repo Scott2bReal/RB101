@@ -81,8 +81,8 @@ def validate_choice(choice, board_state)
 end
 
 def update_filled_squares(board, choice, player, user_squares, computer_squares)
-  user_squares[choice.to_i] = choice if player == 'user'
-  computer_squares[choice.to_i] = choice if player == 'computer'
+  user_squares << choice if player == 'player'
+  computer_squares << choice if player == 'computer'
   board[:filled] += 1
 end
 
@@ -98,8 +98,20 @@ def computer_move(board_state)
   end
 end
 
-def winner?
+def player_wins?(player)
+  player_wins = false
+  WINNING_COMBOS.each do |combo|
+    player.permutation(3) { |perm| player_wins = true if perm == combo }
+  end
+  player_wins
+end
 
+def computer_wins?(computer)
+  computer_wins = false
+  WINNING_COMBOS.each do |combo|
+    computer.permutation(3) { |perm| computer_wins = true if perm == combo }
+  end
+  computer_wins
 end
 
 def board_full?(filled)
@@ -107,8 +119,24 @@ def board_full?(filled)
   false
 end
 
+def display_winner(winner)
+  prompt('Congratulations, you win!') if winner == 'player'
+  prompt('The computer wins. Better luck next time!') if winner == 'computer'
+  prompt("It's a tie!") if winner == 'tie'
+end
+
 def play_again?
-  TODO
+  loop do
+    prompt("Play again? Press 'y' to play again or 'n' to quit")
+    answer = gets.chomp
+    if answer.downcase == 'y'
+      return true
+    elsif answer.downcase == 'n'
+      return false
+    else
+      prompt("Sorry, I didn't understand that")
+    end
+  end
 end
 
 def goodbye
@@ -133,6 +161,8 @@ board_status = {
 }
 user_squares = []
 computer_squares = []
+player_wins = false
+computer_wins = false
 
   loop do
     new_round
@@ -147,11 +177,19 @@ computer_squares = []
 
     break if board_full?(board_status[:filled])
 
+    player_wins = player_wins?(user_squares)
+
+    break if player_wins
+
     computer_choice = computer_move(board_status)
 
     update_filled_squares(board_status, computer_choice, 'computer', user_squares, computer_squares)
 
     update_board(board_status, computer_choice, 'O')
+
+    computer_wins = computer_wins?(computer_squares)
+
+    break if computer_wins
 
 #     if winner?
 #       display_winner
@@ -164,7 +202,19 @@ computer_squares = []
 #   break unless play_again?
 #   new_round
   end
-  break 
+  new_round
+
+  display_board(board_status)
+
+  if player_wins
+    display_winner('player')
+  elsif computer_wins
+    display_winner('computer')
+  else
+    display_winner('tie')
+  end
+
+  break unless play_again?
 end
 
 goodbye
