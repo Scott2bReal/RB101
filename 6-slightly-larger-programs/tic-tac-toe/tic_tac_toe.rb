@@ -44,11 +44,11 @@ end
 def display_board(board)
 box = <<-MSG
 *---+---+---*
-| #{board[0]} | #{board[1]} | #{board[2]} |
+| #{board[:squares][1]} | #{board[:squares][2]} | #{board[:squares][3]} |
 |---|---|---|
-| #{board[3]} | #{board[4]} | #{board[5]} |
+| #{board[:squares][4]} | #{board[:squares][5]} | #{board[:squares][6]} |
 |---|---|---|
-| #{board[6]} | #{board[7]} | #{board[8]} |
+| #{board[:squares][7]} | #{board[:squares][8]} | #{board[:squares][9]} |
 *---+---+---*
 
 MSG
@@ -56,6 +56,7 @@ puts box
 end
 
 def user_move(board_state)
+  answer = ''
   loop do
     prompt("Please enter the number of the box you would like to fill")
     answer = gets.chomp
@@ -66,34 +67,44 @@ def user_move(board_state)
       prompt("Sorry, that doesn't look like a valid box number")
       next
     end
-    board_state[answer.to_i - 1] = 'X'
+    board_state[:squares][answer.to_i] = 'X'
     break
   end
+  answer
 end
 
 def validate_choice(choice, board_state)
-  square = board_state[choice.to_i - 1]
+  square = board_state[:squares][choice.to_i]
   return 'bad' unless choice.match?(/[1-9]/)
   return 'filled' if square == 'X' || square == 'O'
-  true
+  return 'good'
+end
+
+def update_filled_squares(board, choice, player, user_squares, computer_squares)
+  user_squares[choice.to_i] = choice if player == 'user'
+  computer_squares[choice.to_i] = choice if player == 'computer'
+  board[:filled] += 1
 end
 
 def update_board(board_state, choice, player)
-  board_state[choice.to_i - 1] = player
+  board_state[:squares][choice.to_i] = player
 end
 
 def computer_move(board_state)
+  squares = board_state[:squares].values
   loop do
-    choice = board_state.sample
-    return choice 
+    choice = squares.sample
+    return choice if validate_choice(choice, board_state) == 'good'
+  end
 end
 
 def winner?
   TODO
 end
 
-def board_full?
-  TODO
+def board_full?(filled)
+  return true if filled == 9
+  false
 end
 
 def play_again?
@@ -101,43 +112,59 @@ def play_again?
 end
 
 def goodbye
-  TODO
+  prompt('Thanks for playing, goodbye!')
 end
 
 # Game starts here
 loop do
-new_round
 
-squares = %w(1 2 3 4 5 6 7 8 9)
+board_status = { 
+  :squares => {
+  1 => '1',
+  2 => '2',
+  3 => '3',
+  4 => '4',
+  5 => '5',
+  6 => '6',
+  7 => '7',
+  8 => '8',
+  9 => '9'
+  },
+  :filled => 0
+}
+user_squares = []
+computer_squares = []
 
-display_board(squares)
   loop do
-    binding.pry
+    new_round
 
-    user_choice = user_move(squares)
+    display_board(board_status)
 
-    update_board(squares, user_choice, 'X')
+    user_choice = user_move(board_status)
 
-    binding.pry
+    update_filled_squares(board_status, user_choice, 'player', user_squares, computer_squares)
 
-    display_board(squares)
+    update_board(board_status, user_choice, 'X')
 
-    computer_choice = computer_move(squares)
+    board_full?(board_status[:filled])
 
-    update_board(squares, computer_choice, 'O')
+    computer_choice = computer_move(board_status)
 
-    display_board(squares)
+    update_filled_squares(board_status, computer_choice, 'computer', user_squares, computer_squares)
 
-    if winner?
-      display_winner
-      break
-    elsif board_full?
-      display_tie
-      break
-    end
+    update_board(board_status, computer_choice, 'O')
+
+#     if winner?
+#       display_winner
+#       break
+#     elsif board_full?
+#       display_tie
+#       break
+#     end
+#   end
+#   break unless play_again?
+#   new_round
   end
-  break unless play_again?
-  new_round
 end
 
 goodbye
