@@ -75,7 +75,7 @@ end
 
 def validate_choice(choice, board_state)
   square = board_state[:squares][choice.to_i]
-  return 'bad' unless choice.match?(/[1-9]/)
+  return 'bad' unless choice.match?(/[1-9]/) && choice.size == 1
   return 'filled' if square == 'X' || square == 'O'
   return 'good'
 end
@@ -99,7 +99,7 @@ def computer_move(board_state)
 end
 
 def winner?
-  TODO
+
 end
 
 def board_full?(filled)
@@ -117,7 +117,6 @@ end
 
 # Game starts here
 loop do
-
 board_status = { 
   :squares => {
   1 => '1',
@@ -146,7 +145,7 @@ computer_squares = []
 
     update_board(board_status, user_choice, 'X')
 
-    board_full?(board_status[:filled])
+    break if board_full?(board_status[:filled])
 
     computer_choice = computer_move(board_status)
 
@@ -165,6 +164,7 @@ computer_squares = []
 #   break unless play_again?
 #   new_round
   end
+  break 
 end
 
 goodbye
