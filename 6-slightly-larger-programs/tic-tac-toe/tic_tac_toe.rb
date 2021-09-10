@@ -103,7 +103,7 @@ end
 def player_wins?(player)
   player_wins = false
   WINNING_COMBOS.each do |combo|
-    player.permutation(3) { |perm| player_wins = true if perm == combo }
+    player.sort.combination(3) { |perm| player_wins = true if perm == combo }
   end
   player_wins
 end
@@ -111,7 +111,7 @@ end
 def computer_wins?(computer)
   computer_wins = false
   WINNING_COMBOS.each do |combo|
-    computer.permutation(3) { |perm| computer_wins = true if perm == combo }
+    computer.sort.combination(3) { |perm| computer_wins = true if perm == combo }
   end
   computer_wins
 end
@@ -147,6 +147,7 @@ end
 
 # Game starts here
 loop do
+  # Fresh variables for a new game
   board_status = {
     squares: {
       1 => '1',
@@ -177,6 +178,7 @@ loop do
 
     update_board(board_status, user_choice, 'X')
 
+    # player_wins needs to be set before board_full break
     player_wins = player_wins?(user_squares)
 
     break if board_full?(board_status[:filled])
