@@ -131,14 +131,19 @@ def update_score(score, player_wins, computer_wins)
   end
 end
 
-def computer_move(board_state, player_squares)
+def computer_move(board_state, player_squares, computer_squares)
   available_squares = find_available_squares(board_state)
-  risky_squares = find_at_risk_squares(available_squares, player_squares)
-  choice = case risky_squares.empty?
-           when true then available_squares.sample
-           when false then risky_squares.sample
-           end
-  choice
+  # Can computer win this turn?
+  win = find_at_risk_squares(available_squares, computer_squares)
+  unless win.empty?
+    return win.sample
+  end
+  # Can player win this turn?
+  lose = find_at_risk_squares(available_squares, player_squares)
+  unless lose.empty?
+    return lose.sample
+  end
+  available_squares.sample
 end
 
 def find_available_squares(board_state)
@@ -245,7 +250,7 @@ loop do
 
     break if player_wins
 
-    computer_choice = computer_move(board_status, user_squares)
+    computer_choice = computer_move(board_status, user_squares, computer_squares)
 
     update_computer_squares(board_status, computer_choice, computer_squares)
 
