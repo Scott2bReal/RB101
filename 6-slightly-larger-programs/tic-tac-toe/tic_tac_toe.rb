@@ -221,7 +221,7 @@ end
 score = { player: 0, computer: 0 }
 loop do
   # Fresh variables for a new game
-  board_status = initialize_board
+  board = initialize_board
   user_squares = []
   computer_squares = []
   player_wins = false
@@ -233,28 +233,28 @@ loop do
   loop do
     new_round
 
-    display_board(board_status)
+    display_board(board)
 
     display_score(score)
 
-    user_choice = user_move(board_status)
+    user_choice = user_move(board)
 
-    update_player_squares(board_status, user_choice, user_squares)
+    update_player_squares(board, user_choice, user_squares)
 
-    update_board(board_status, user_choice, 'X')
+    update_board(board, user_choice, 'X')
 
     # player_wins needs to be set before board_full break
     player_wins = player_wins?(user_squares)
 
-    break if board_full?(board_status[:filled])
+    break if board_full?(board[:filled])
 
     break if player_wins
 
-    computer_choice = computer_move(board_status, user_squares, computer_squares)
+    computer_choice = computer_move(board, user_squares, computer_squares)
 
-    update_computer_squares(board_status, computer_choice, computer_squares)
+    update_computer_squares(board, computer_choice, computer_squares)
 
-    update_board(board_status, computer_choice, 'O')
+    update_board(board, computer_choice, 'O')
 
     computer_wins = computer_wins?(computer_squares)
 
@@ -262,7 +262,7 @@ loop do
   end
   new_round
 
-  display_board(board_status)
+  display_board(board)
 
   if player_wins
     display_winner('player')
