@@ -264,6 +264,7 @@ loop do
   computer_squares = []
   player_wins = false
   computer_wins = false
+
   if ultimate_winner?(score)
     score = refresh_score
   end
