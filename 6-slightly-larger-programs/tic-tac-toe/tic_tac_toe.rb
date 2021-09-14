@@ -5,6 +5,7 @@ EXPLANATION =
   and marks a square on the board. First player to reach 3 squares in a row,
   including diagonals, wins. If all 9 squares are marked and no player has 3
   squares in a row, then the game is a tie. You (X) will be playing the computer (O).
+  The first to 5 wins is the ultimate winner.
   ---
 
   MSG
@@ -34,8 +35,8 @@ def greeting
   puts(EXPLANATION)
 end
 
-def refresh_score(score)
-  score = { player: 0, computer: 0 }
+def refresh_score
+  { player: 0, computer: 0 }
 end
 
 def new_round
@@ -61,6 +62,10 @@ def display_board(board)
 
   MSG
   puts box
+end
+
+def display_score(score)
+  prompt("** Player: #{score[:player]}, Computer: #{score[:computer]} **")
 end
 
 def user_move(board_state)
@@ -102,6 +107,14 @@ def update_board(board_state, choice, player)
   board_state[:squares][choice.to_i] = player
 end
 
+def update_score(score, player_wins, computer_wins)
+  if player_wins
+    score[:player] += 1
+  elsif computer_wins
+    score[:computer] += 1
+  end
+end
+
 def computer_move(board_state)
   squares = board_state[:squares].values
   loop do
@@ -137,6 +150,11 @@ def display_winner(winner)
   prompt("It's a tie!") if winner == 'tie'
 end
 
+def ultimate_winner?(score)
+  return true if score[:player] == 5
+  return true if score[:computer] == 5
+end
+
 def play_again?
   loop do
     prompt("Play again? Press 'y' to play again or 'n' to quit")
@@ -165,12 +183,16 @@ loop do
   computer_squares = []
   player_wins = false
   computer_wins = false
-  score = refresh_score(score) if TODO
+  if score[:player] == 5 || score[:computer] == 5
+    score = refresh_score
+  end
 
   loop do
     new_round
 
     display_board(board_status)
+
+    display_score(score)
 
     user_choice = user_move(board_status)
 
@@ -207,7 +229,12 @@ loop do
     display_winner('tie')
   end
 
-  break unless play_again?
+  update_score(score, player_wins, computer_wins)
+  display_score(score)
+
+  if ultimate_winner?(score)
+    break unless play_again?
+  end
 end
 
 goodbye
