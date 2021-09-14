@@ -183,7 +183,7 @@ loop do
   computer_squares = []
   player_wins = false
   computer_wins = false
-  if score[:player] == 5 || score[:computer] == 5
+  if ultimate_winner?(score)
     score = refresh_score
   end
 
