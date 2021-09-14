@@ -58,6 +58,19 @@ def new_round
   greeting
 end
 
+def who_goes_first
+  loop do
+    prompt("Who should go first? 1) You 2) Computer 3) Random")
+    answer = gets.chomp
+    case answer
+    when '1' then return 'player'
+    when '2' then return 'computer'
+    when '3' then return %w(player computer).sample
+    end
+    prompt("I'm sorry, I didn't understand that")
+  end
+end
+
 def initialize_board
   new_board = { filled: 0, squares: {} }
   (1..9).each { |num| new_board[:squares][num] = num.to_s }
@@ -187,6 +200,11 @@ def board_full?(filled)
   false
 end
 
+def switch_player(active_player)
+  return 'computer' if active_player == 'player'
+  return 'player' if active_player == 'computer'
+end
+
 def display_winner(winner)
   prompt('Congratulations, you win!') if winner == 'player'
   prompt('The computer wins. Better luck next time!') if winner == 'computer'
@@ -220,7 +238,7 @@ end
 # Score needs initialize before main loop
 score = { player: 0, computer: 0 }
 loop do
-  # Fresh variables for a new game
+  # Fresh variables for a new round
   board = initialize_board
   user_squares = []
   computer_squares = []
@@ -237,28 +255,32 @@ loop do
 
     display_score(score)
 
-    user_choice = user_move(board)
+    active_player = who_goes_first
 
-    update_player_squares(board, user_choice, user_squares)
+    if active_player == 'player'
+      user_choice = user_move(board)
 
-    update_board(board, user_choice, 'X')
+      update_player_squares(board, user_choice, user_squares)
 
-    # player_wins needs to be set before board_full break
-    player_wins = player_wins?(user_squares)
+      update_board(board, user_choice, 'X')
 
+      player_wins = player_wins?(user_squares)
+
+      break if player_wins
+    else
+      computer_choice = computer_move(board, user_squares, computer_squares)
+
+      update_computer_squares(board, computer_choice, computer_squares)
+
+      update_board(board, computer_choice, 'O')
+
+      computer_wins = computer_wins?(computer_squares)
+
+      break if computer_wins
+
+    end
     break if board_full?(board[:filled])
-
-    break if player_wins
-
-    computer_choice = computer_move(board, user_squares, computer_squares)
-
-    update_computer_squares(board, computer_choice, computer_squares)
-
-    update_board(board, computer_choice, 'O')
-
-    computer_wins = computer_wins?(computer_squares)
-
-    break if computer_wins
+    active_player = switch_player(active_player)
   end
   new_round
 
