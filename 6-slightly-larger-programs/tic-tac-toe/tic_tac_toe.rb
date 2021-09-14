@@ -138,13 +138,22 @@ def computer_move(board_state, player_squares)
       available_squares << square
     end
   end
-  choice = available_squares.sample
+  risky_squares = find_at_risk_squares(available_squares, player_squares)
+  choice = case risky_squares.empty?
+           when true then available_squares.sample
+           when false then risky_squares.sample
+           end
+  choice
+end
+
+def find_at_risk_squares(available_squares, player_squares)
+  risky_squares = []
   available_squares.each do |square|
     player_squares.combination(2) do |combo|
-      choice = square if DANGER_SQUARES[square].include?(combo)
+      risky_squares << square if DANGER_SQUARES[square].include?(combo)
     end
   end
-  choice
+  risky_squares
 end
 
 def player_wins?(player)
