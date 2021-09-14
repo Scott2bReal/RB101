@@ -1,3 +1,5 @@
+require 'pry'
+
 EXPLANATION =
   <<-MSG
   ---
@@ -107,11 +109,13 @@ end
 
 def update_player_squares(board, choice, player_squares)
   player_squares << choice
+  player_squares.sort!
   board[:filled] += 1
 end
 
 def update_computer_squares(board, choice, computer_squares)
   computer_squares << choice
+  computer_squares.sort!
   board[:filled] += 1
 end
 
@@ -127,12 +131,20 @@ def update_score(score, player_wins, computer_wins)
   end
 end
 
-def computer_move(board_state)
-  squares = board_state[:squares].values
-  loop do
-    choice = squares.sample
-    return choice if validate_choice(choice, board_state) == 'good'
+def computer_move(board_state, player_squares)
+  available_squares = []
+  board_state[:squares].values.each do |square|
+    unless square == 'X' || square == 'O'
+      available_squares << square
+    end
   end
+  choice = available_squares.sample
+  available_squares.each do |square|
+    player_squares.combination(2) do |combo|
+      choice = square if DANGER_SQUARES[square].include?(combo)
+    end
+  end
+  choice
 end
 
 def player_wins?(player)
@@ -219,7 +231,7 @@ loop do
 
     break if player_wins
 
-    computer_choice = computer_move(board_status)
+    computer_choice = computer_move(board_status, user_squares)
 
     update_computer_squares(board_status, computer_choice, computer_squares)
 
