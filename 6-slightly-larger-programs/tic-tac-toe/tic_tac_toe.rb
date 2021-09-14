@@ -85,7 +85,7 @@ end
 def user_move(board_state)
   answer = ''
   loop do
-    prompt("Please enter the number of the box you would like to fill")
+    prompt("Enter the number of the box you would like to fill and press ENTER")
     answer = gets.chomp
     if validate_choice(answer, board_state) == 'filled'
       prompt('Sorry, that box has already been filled')
