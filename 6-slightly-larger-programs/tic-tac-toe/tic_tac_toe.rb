@@ -95,6 +95,22 @@ def display_score(score)
   prompt("** Player: #{score[:player]}, Computer: #{score[:computer]} **")
 end
 
+def make_a_move(active_player, board, user_squares, computer_squares)
+  if active_player == 'player'
+    user_choice = user_move(board)
+
+    update_player_squares(board, user_choice, user_squares)
+
+    update_board(board, user_choice, 'X')
+  else
+    computer_choice = computer_move(board, user_squares, computer_squares)
+
+    update_computer_squares(board, computer_choice, computer_squares)
+
+    update_board(board, computer_choice, 'O')
+  end
+end
+
 def user_move(board_state)
   answer = ''
   loop do
@@ -230,12 +246,18 @@ def play_again?
   end
 end
 
+def display_match_winner(score)
+  prompt("You're the grand champ!") if score[:player] == 5
+  prompt("The computer wins the match") if score[:computer] == 5
+end
+
 def goodbye
   prompt('Thanks for playing, goodbye!')
 end
 
 # Game starts here
 # Score needs initialize before main loop
+new_round # For to look nice
 score = { player: 0, computer: 0 }
 loop do
   # Fresh variables for a new round
@@ -248,42 +270,28 @@ loop do
     score = refresh_score
   end
 
+  # At the top of each round player can choose who goes first
+  active_player = who_goes_first
   loop do
+    # Loop will continue until there is a round winner
     new_round
 
     display_board(board)
 
     display_score(score)
 
-    active_player = who_goes_first
+    make_a_move(active_player, board, user_squares, computer_squares)
 
-    if active_player == 'player'
-      user_choice = user_move(board)
+    player_wins = player_wins?(user_squares)
+    computer_wins = computer_wins?(computer_squares)
 
-      update_player_squares(board, user_choice, user_squares)
+    break if player_wins || computer_wins || board_full?(board[:filled])
 
-      update_board(board, user_choice, 'X')
-
-      player_wins = player_wins?(user_squares)
-
-      break if player_wins
-    else
-      computer_choice = computer_move(board, user_squares, computer_squares)
-
-      update_computer_squares(board, computer_choice, computer_squares)
-
-      update_board(board, computer_choice, 'O')
-
-      computer_wins = computer_wins?(computer_squares)
-
-      break if computer_wins
-
-    end
-    break if board_full?(board[:filled])
     active_player = switch_player(active_player)
   end
+  # Once someone has won, a message needs to be displayed.
+  # new_round and display_board are here to keep the screen consistent
   new_round
-
   display_board(board)
 
   if player_wins
@@ -298,6 +306,7 @@ loop do
   display_score(score)
 
   if ultimate_winner?(score)
+    display_match_winner(score)
     break unless play_again?
   end
 end
