@@ -34,6 +34,10 @@ def greeting
   puts(EXPLANATION)
 end
 
+def refresh_score(score)
+  score = { player: 0, computer: 0 }
+end
+
 def new_round
   clear_screen
   greeting
@@ -47,13 +51,13 @@ end
 
 def display_board(board)
   box = <<-MSG
-  *---+---+---*
+  *-----------*
   | #{board[:squares][1]} | #{board[:squares][2]} | #{board[:squares][3]} |
-  |---|---|---|
+  |---+---+---|
   | #{board[:squares][4]} | #{board[:squares][5]} | #{board[:squares][6]} |
-  |---|---|---|
+  |---+---+---|
   | #{board[:squares][7]} | #{board[:squares][8]} | #{board[:squares][9]} |
-  *---+---+---*
+  *-----------*
 
   MSG
   puts box
@@ -152,27 +156,16 @@ def goodbye
 end
 
 # Game starts here
+# Score needs initialize before main loop
+score = { player: 0, computer: 0 }
 loop do
   # Fresh variables for a new game
   board_status = initialize_board
-#   board_status = {
-#     squares: {
-#       1 => '1',
-#       2 => '2',
-#       3 => '3',
-#       4 => '4',
-#       5 => '5',
-#       6 => '6',
-#       7 => '7',
-#       8 => '8',
-#       9 => '9'
-#     },
-#     filled: 0
-#   }
   user_squares = []
   computer_squares = []
   player_wins = false
   computer_wins = false
+  score = refresh_score(score) if TODO
 
   loop do
     new_round
