@@ -132,18 +132,23 @@ def update_score(score, player_wins, computer_wins)
 end
 
 def computer_move(board_state, player_squares)
-  available_squares = []
-  board_state[:squares].values.each do |square|
-    unless square == 'X' || square == 'O'
-      available_squares << square
-    end
-  end
+  available_squares = find_available_squares(board_state)
   risky_squares = find_at_risk_squares(available_squares, player_squares)
   choice = case risky_squares.empty?
            when true then available_squares.sample
            when false then risky_squares.sample
            end
   choice
+end
+
+def find_available_squares(board_state)
+  available_squares = []
+  board_state[:squares].values.each do |square|
+    unless square == 'X' || square == 'O'
+      available_squares << square
+    end
+  end
+  available_squares
 end
 
 def find_at_risk_squares(available_squares, player_squares)
