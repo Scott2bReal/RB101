@@ -39,6 +39,12 @@ def new_round
   greeting
 end
 
+def initialize_board
+  new_board = { filled: 0, squares: {} }
+  (1..9).each { |num| new_board[:squares][num] = num.to_s }
+  new_board
+end
+
 def display_board(board)
   box = <<-MSG
   *---+---+---*
@@ -148,20 +154,21 @@ end
 # Game starts here
 loop do
   # Fresh variables for a new game
-  board_status = {
-    squares: {
-      1 => '1',
-      2 => '2',
-      3 => '3',
-      4 => '4',
-      5 => '5',
-      6 => '6',
-      7 => '7',
-      8 => '8',
-      9 => '9'
-    },
-    filled: 0
-  }
+  board_status = initialize_board
+#   board_status = {
+#     squares: {
+#       1 => '1',
+#       2 => '2',
+#       3 => '3',
+#       4 => '4',
+#       5 => '5',
+#       6 => '6',
+#       7 => '7',
+#       8 => '8',
+#       9 => '9'
+#     },
+#     filled: 0
+#   }
   user_squares = []
   computer_squares = []
   player_wins = false
