@@ -96,15 +96,11 @@ end
 def make_a_move(active_player, board, user_squares, computer_squares)
   if active_player == 'player'
     user_choice = user_move(board)
-
     update_player_squares(board, user_choice, user_squares)
-
     update_board(board, user_choice, 'X')
   else
     computer_choice = computer_move(board, user_squares, computer_squares)
-
     update_computer_squares(board, computer_choice, computer_squares)
-
     update_board(board, computer_choice, 'O')
   end
 end
@@ -170,6 +166,7 @@ def computer_move(board_state, player_squares, computer_squares)
   unless lose.empty?
     return lose.sample
   end
+  # Choose a random available square
   available_squares.sample
 end
 
