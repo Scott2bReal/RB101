@@ -81,11 +81,11 @@ end
 def display_board(board)
   box = <<-MSG
   *-----------*
-  | #{board[:squares][1]} | #{board[:squares][2]} | #{board[:squares][3]} |
+  | #{board[1]} | #{board[2]} | #{board[3]} |
   |---+---+---|
-  | #{board[:squares][4]} | #{board[:squares][5]} | #{board[:squares][6]} |
+  | #{board[4]} | #{board[5]} | #{board[6]} |
   |---+---+---|
-  | #{board[:squares][7]} | #{board[:squares][8]} | #{board[:squares][9]} |
+  | #{board[7]} | #{board[8]} | #{board[9]} |
   *-----------*
 
   MSG
@@ -296,7 +296,7 @@ loop do
     # Loop will continue until there is a round winner
     new_round
 
-    display_board(board)
+    display_board(board[:squares])
 
     display_score(score)
 
@@ -312,7 +312,7 @@ loop do
   # Once someone has won, a message needs to be displayed.
   # new_round and display_board are here to keep the screen consistent
   new_round
-  display_board(board)
+  display_board(board[:squares])
 
   if player_wins
     display_winner('player')
