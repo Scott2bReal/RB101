@@ -308,3 +308,4 @@ loop do
 end
 
 goodbye
+clear_screen
