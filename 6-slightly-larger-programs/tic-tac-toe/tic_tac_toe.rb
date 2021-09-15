@@ -33,6 +33,9 @@ DANGER_SQUARES = {
   '9' => [%w(7 8), %w(3 6), %w(1 5)]
 }
 
+PLAYER = 'X'
+COMPUTER = 'O'
+
 def prompt(message)
   puts "=> #{message}"
 end
@@ -97,36 +100,44 @@ def make_a_move(active_player, board, user_squares, computer_squares)
   if active_player == 'player'
     user_choice = user_move(board)
     update_player_squares(board, user_choice, user_squares)
-    update_board(board, user_choice, 'X')
+    update_board(board, user_choice, PLAYER)
   else
     computer_choice = computer_move(board, user_squares, computer_squares)
     update_computer_squares(board, computer_choice, computer_squares)
-    update_board(board, computer_choice, 'O')
+    update_board(board, computer_choice, COMPUTER)
   end
 end
 
-def user_move(board_state)
+def user_move(board)
   answer = ''
   loop do
-    prompt("Enter the number of the box you would like to fill and press ENTER")
+    prompt "Enter the number of the box you would like to fill and press ENTER"
+    prompt "Available squares: #{joinor(available_squares(board), ', ', 'and')}"
     answer = gets.chomp
-    if validate_choice(answer, board_state) == 'filled'
-      prompt('Sorry, that box has already been filled')
-      next
-    elsif validate_choice(answer, board_state) == 'bad'
-      prompt("Sorry, that doesn't look like a valid box number")
-      next
+    if validate_choice(answer, board) == 'filled'
+      prompt 'Sorry, that box has already been filled'
+    elsif validate_choice(answer, board) == 'bad'
+      prompt "Sorry, that doesn't look like a valid box number"
+    else
+      board[:squares][answer.to_i] = PLAYER
+      break
     end
-    board_state[:squares][answer.to_i] = 'X'
-    break
   end
   answer
+end
+
+def joinor(array, delim, final)
+  all_but_last = []
+  array.each do |word|
+    all_but_last << word if array.index(word) < array.size - 1
+  end
+  "#{all_but_last.join(delim)}#{delim}#{final} #{array.last}"
 end
 
 def validate_choice(choice, board_state)
   square = board_state[:squares][choice.to_i]
   return 'bad' unless choice.match?(/[1-9]/) && choice.size == 1
-  return 'filled' if square == 'X' || square == 'O'
+  return 'filled' if square == PLAYER || square == COMPUTER
   'good'
 end
 
@@ -155,7 +166,7 @@ def update_score(score, player_wins, computer_wins)
 end
 
 def computer_move(board_state, player_squares, computer_squares)
-  available_squares = find_available_squares(board_state)
+  available_squares = available_squares(board_state)
   # Can computer win this turn?
   win = find_at_risk_squares(available_squares, computer_squares)
   unless win.empty?
@@ -170,10 +181,10 @@ def computer_move(board_state, player_squares, computer_squares)
   available_squares.sample
 end
 
-def find_available_squares(board_state)
+def available_squares(board_state)
   available_squares = []
   board_state[:squares].values.each do |square|
-    unless square == 'X' || square == 'O'
+    unless square == PLAYER || square == COMPUTER
       available_squares << square
     end
   end
