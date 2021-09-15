@@ -112,7 +112,7 @@ def user_move(board)
   answer = ''
   loop do
     prompt "Enter the number of the box you would like to fill and press ENTER"
-    prompt "Available squares: #{joinor(available_squares(board), ', ', 'and')}"
+    display_available_squares(board)
     answer = gets.chomp
     if validate_choice(answer, board) == 'filled'
       prompt 'Sorry, that box has already been filled'
@@ -126,12 +126,25 @@ def user_move(board)
   answer
 end
 
+def display_available_squares(board)
+  avail = available_squares(board)
+  if avail.size == 1
+    prompt "Available square: #{avail.first}"
+  else
+    prompt "Available squares: #{joinor(avail, ', ', 'and')}"
+  end
+end
+
 def joinor(array, delim, final)
   all_but_last = []
   array.each do |word|
     all_but_last << word if array.index(word) < array.size - 1
   end
-  "#{all_but_last.join(delim)}#{delim}#{final} #{array.last}"
+  if all_but_last.empty?
+    array.last.to_s
+  else
+    "#{all_but_last.join(delim)}#{delim}#{final} #{array.last}"
+  end
 end
 
 def validate_choice(choice, board_state)
