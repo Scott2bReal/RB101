@@ -226,9 +226,7 @@ end
 def player_wins?(player)
   wins = false
   WINNING_COMBOS.each do |combo|
-    player.sort.combination(SQUARES_TO_WIN) do |perm|
-      wins = true if perm == combo
-    end
+    player.combination(SQUARES_TO_WIN) { |perm| wins = true if perm == combo }
   end
   wins
 end
@@ -236,9 +234,7 @@ end
 def computer_wins?(computer)
   wins = false
   WINNING_COMBOS.each do |combo|
-    computer.sort.combination(SQUARES_TO_WIN) do |perm|
-      wins = true if perm == combo
-    end
+    computer.combination(SQUARES_TO_WIN) { |perm| wins = true if perm == combo }
   end
   wins
 end
