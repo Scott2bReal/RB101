@@ -1,20 +1,27 @@
 MAX_POINTS = 21
-JACK = 10
-QUEEN = 10
-KING = 10
+FACE_CARDS = [:jack, :queen, :king]
 
 def prompt(msg)
   puts "=> #{msg}"
 end
 
-def deal_cards(decks)
-  card = decks[:deck].keys.sample
-  if card == 10
-    card = decks[:deck][10].keys.sample
-    decks[:deck][10][card] -= 1
-  elsif card == 11
-    calculate_aces
+def deal_cards(cards, hands)
+  hands.keys.map do |hand|
+    card = cards.sample
+    hands[hand] << card
+    cards.delete(card)
   end
+  hands
+end
+
+def draw_cards(deck)
+  dealt_cards = []
+  until dealt_cards.size == 2
+    card = deck.keys.sample
+    next if deck[card] == 0
+    dealt_cards << card
+  end
+  dealt_cards
 end
 
 def calculate_aces(score)
@@ -34,9 +41,7 @@ def goodbye
 end
 
 # 1. Initialize deck
-decks = {
-  deck: {
-    1 => 4,
+deck = {
     2 => 4,
     3 => 4,
     4 => 4,
@@ -45,42 +50,20 @@ decks = {
     7 => 4,
     8 => 4,
     9 => 4,
-    10 => { jack: 4, queen: 4, king: 4 },
-    11 => { ace: 4 }
-  },
-  player: {
-    1 => 0,
-    2 => 0,
-    3 => 0,
-    4 => 0,
-    5 => 0,
-    6 => 0,
-    7 => 0,
-    8 => 0,
-    9 => 0,
-    10 => { jack: 0, queen: 0, king: 0 },
-    11 => { ace: 0 }
-  },
-  dealer: {
-    1 => 0,
-    2 => 0,
-    3 => 0,
-    4 => 0,
-    5 => 0,
-    6 => 0,
-    7 => 0,
-    8 => 0,
-    9 => 0,
-    10 => { jack: 0, queen: 0, king: 0 },
-    11 => { ace: 0 }
-  }
+    jack: 4, 
+    queen: 4, 
+    king: 4,
+    ace: 4
 }
+
+hands = { player: [], dealer: [] }
 
 score = { player: 0, dealer: 0 }
 loop do
   loop do
     # 2. Deal cards to player and dealer
-    deal_cards(decks)
+    deal_cards(draw_cards(deck), hands)
+    break
 
     ## 3. Player turn: hit or stay
     ##   - Repeat until bust or 'stay'
@@ -103,5 +86,8 @@ loop do
     #break if winner?(score)
   #end
   #break unless play_again?
+  end
+  break
 end
+
 goodbye
