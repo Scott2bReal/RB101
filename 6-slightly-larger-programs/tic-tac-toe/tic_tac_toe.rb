@@ -140,6 +140,7 @@ def joinor(array, delim, final)
   array.each do |word|
     all_but_last << word if array.index(word) < array.size - 1
   end
+  # A bit extraneous for this program but could use for something later
   if all_but_last.empty?
     array.last.to_s
   else
@@ -181,7 +182,7 @@ end
 def computer_move(board_state, player_squares, computer_squares)
   available_squares = available_squares(board_state)
   # Can computer win this turn?
-  win = find_at_risk_squares(available_squares, computer_squares)
+  win = find_at_risk_squares(available_squares, computer_squares) # Array
   unless win.empty?
     return win.sample
   end

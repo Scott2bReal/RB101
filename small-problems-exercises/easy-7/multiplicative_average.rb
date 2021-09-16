@@ -26,7 +26,7 @@ def show_multiplicative_average(array)
   divisor = array.size.to_f
   product = 1
   array.each { |num| product *= num }
-  puts "The result is #{format("%0.3f", product / divisor)}"
+  puts "The result is #{format('%0.3f', product / divisor)}"
 end
 
 show_multiplicative_average([3, 5])                # => The result is 7.500
