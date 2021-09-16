@@ -1,7 +1,20 @@
 MAX_POINTS = 21
+JACK = 10
+QUEEN = 10
+KING = 10
 
 def prompt(msg)
   puts "=> #{msg}"
+end
+
+def deal_cards(decks)
+  card = decks[:deck].keys.sample
+  if card == 10
+    card = decks[:deck][10].keys.sample
+    decks[:deck][10][card] -= 1
+  elsif card == 11
+    calculate_aces
+  end
 end
 
 def calculate_aces(score)
@@ -10,9 +23,10 @@ end
 def deck_score(decks, score)
 end
 
-def deal_cards(decks)
-  card = decks[:deck].keys.sample
-  TODO
+def player_turn(decks, score)
+end
+
+def dealer_turn(decks, score)
 end
 
 def goodbye
@@ -68,26 +82,26 @@ loop do
     # 2. Deal cards to player and dealer
     deal_cards(decks)
 
-    # 3. Player turn: hit or stay
-    #   - Repeat until bust or 'stay'
-    player_turn(decks, score[:player])
+    ## 3. Player turn: hit or stay
+    ##   - Repeat until bust or 'stay'
+    #player_turn(decks, score[:player])
 
-    # 4. If player bust, dealer wins
-    if score[:player] > MAX_POINTS
-      break
-    end
+    ## 4. If player bust, dealer wins
+    #if score[:player] > MAX_POINTS
+      #break
+    #end
 
-    # 5. Dealer turn: hit or stay
-    dealer_turn(decks, score[:dealer])
+    ## 5. Dealer turn: hit or stay
+    #dealer_turn(decks, score[:dealer])
 
-    # 6. If dealer bust, player wins
-    if score[:dealer] > MAX_POINTS
-      break
-    end
+    ## 6. If dealer bust, player wins
+    #if score[:dealer] > MAX_POINTS
+      #break
+    #end
 
-    # 7. Compare cards and declare winner
-    break if winner?(score)
-  end
-  break unless play_again?
+    ## 7. Compare cards and declare winner
+    #break if winner?(score)
+  #end
+  #break unless play_again?
 end
 goodbye
