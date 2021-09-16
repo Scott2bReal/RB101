@@ -1,6 +1,6 @@
 =begin
 
-Problem: 
+Problem:
 Write a method that takes a floating point number that represents an
 angle between 0 and 360 degrees and returns a String that represents that angle
 in degrees, minutes and seconds. You should use a degree symbol (°) to represent
@@ -41,7 +41,7 @@ Algorithm:
   - Convert angle to sexagesimal string
     - Make array of number before and number after decimal (strings)
     - Add first element to degrees hash ([:degrees])
-    - Multiply 
+    - Multiply
   - Format string with symbols from rules, and values from degrees hash
   - Return final_angle
 
@@ -88,7 +88,6 @@ def dms(angle)
   minutes = degrees_hash[:minutes]
   seconds = degrees_hash[:seconds]
   final_angle = "#{degrees}#{minutes}#{seconds}"
-  final_angle
 end
 
 puts dms(30) == %(30°00'00")
