@@ -215,6 +215,8 @@ def find_at_risk_squares(available_squares, player_squares)
   risky_squares
 end
 
+# These (player_wins, computer_wins) are split up as an attempt at efficiency
+# Rather than check combos for both every time, only check one at a time
 def player_wins?(player)
   wins = false
   WINNING_COMBOS.each do |combo|
