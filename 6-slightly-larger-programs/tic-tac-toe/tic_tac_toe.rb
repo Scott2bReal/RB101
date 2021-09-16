@@ -277,7 +277,7 @@ end
 
 # Game starts here
 # Score needs initialize before main loop
-new_round # For to look nice
+new_round # To look nice
 score = { player: 0, computer: 0 }
 loop do
   # Fresh variables for a new round
