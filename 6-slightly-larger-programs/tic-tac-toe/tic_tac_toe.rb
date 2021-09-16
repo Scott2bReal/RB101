@@ -33,6 +33,12 @@ DANGER_SQUARES = {
   '9' => [%w(7 8), %w(3 6), %w(1 5)]
 }
 
+TOTAL_SQUARES = 9
+SQUARES_TO_THREATEN = 2
+SQUARES_TO_WIN = 3
+
+MATCH_WIN = 5
+
 PLAYER = 'X'
 COMPUTER = 'O'
 
@@ -74,7 +80,7 @@ end
 
 def initialize_board
   new_board = { filled: 0, squares: {} }
-  (1..9).each { |num| new_board[:squares][num] = num.to_s }
+  (1..TOTAL_SQUARES).each { |num| new_board[:squares][num] = num.to_s }
   new_board
 end
 
@@ -208,7 +214,7 @@ end
 def find_at_risk_squares(available_squares, player_squares)
   risky_squares = []
   available_squares.each do |square|
-    player_squares.combination(2) do |combo|
+    player_squares.combination(SQUARES_TO_THREATEN) do |combo|
       risky_squares << square if DANGER_SQUARES[square].include?(combo)
     end
   end
@@ -220,7 +226,9 @@ end
 def player_wins?(player)
   wins = false
   WINNING_COMBOS.each do |combo|
-    player.sort.combination(3) { |perm| wins = true if perm == combo }
+    player.sort.combination(SQUARES_TO_WIN) do |perm|
+      wins = true if perm == combo
+    end
   end
   wins
 end
@@ -228,13 +236,15 @@ end
 def computer_wins?(computer)
   wins = false
   WINNING_COMBOS.each do |combo|
-    computer.sort.combination(3) { |perm| wins = true if perm == combo }
+    computer.sort.combination(SQUARES_TO_WIN) do |perm|
+      wins = true if perm == combo
+    end
   end
   wins
 end
 
 def board_full?(filled)
-  return true if filled == 9
+  return true if filled == TOTAL_SQUARES
   false
 end
 
@@ -250,8 +260,8 @@ def display_winner(winner)
 end
 
 def ultimate_winner?(score)
-  return true if score[:player] == 5
-  return true if score[:computer] == 5
+  return true if score[:player] == MATCH_WIN
+  return true if score[:computer] == MATCH_WIN
 end
 
 def play_again?
@@ -269,8 +279,8 @@ def play_again?
 end
 
 def display_match_winner(score)
-  prompt("You're the grand champ!") if score[:player] == 5
-  prompt("The computer wins the match") if score[:computer] == 5
+  prompt("You're the grand champ!") if score[:player] == MATCH_WIN
+  prompt("The computer wins the match") if score[:computer] == MATCH_WIN
 end
 
 def goodbye
@@ -335,4 +345,3 @@ loop do
 end
 
 goodbye
-clear_screen
