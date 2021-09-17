@@ -1,4 +1,5 @@
 MAX_POINTS = 21
+
 CARD_VALUES = {
   '2' => 2,
   '3' => 3,
@@ -43,6 +44,7 @@ def display_hands(hands)
   prompt("You have: #{player_hand}")
 end
 
+# Makes listing arrays nice and pretty
 def joinor(array, delim, final)
   all_but_last = []
   array.each do |word|
@@ -72,7 +74,7 @@ def calculate_aces(card_values)
     if card_values[index] == CARD_VALUES['Ace']
       card_values[index] = CARD_VALUES[:ace_1]
     end
-    break if card_values.sum <= MAX_WINS
+    break if card_values.sum <= MAX_POINTS
     index += 1
   end
 end
@@ -88,11 +90,76 @@ def calculate_score(hands, score)
   end
 end
 
+def player_turn(deck, hands, score)
+  total = score
+  loop do
+    display_hands(hands)
+    answer = player_choice
+    if answer == '2'
+      prompt("You chose to stay!")
+      break
+    else
+      prompt("You said 'Hit me!'")
+      hit_me(deck, hands[:player])
+      total = calculate_hand_total(hands[:player])
+      break if busted?(total)
+    end
+  end
+  total
+end
+
+def player_choice
+  loop do
+    prompt(" 1) Hit or 2) Stay?")
+    answer = gets.chomp
+    return answer if valid_choice?(answer)
+  end
+end
+
+def valid_choice?(choice)
+  return true if choice == '1'
+  return true if choice == '2'
+  false
+end
+
+def hit_me(deck, hand)
+  card = deck.keys.sample
+  hand << card
+  deck[card] -= 1
+end
+
+def dealer_turn(deck, hands, scores)
+  until scores[:dealer] >= 17 || scores[:dealer] > scores[:player]
+    hit_me(deck, hands[:dealer])
+    total = calculate_hand_total(hands[:dealer])
+    break if busted?(total)
+  end
+end
+
+def display_winner(winner)
+  if winner == 'player'
+    prompt('Congratulations, you win!')
+  elsif winner == 'dealer'
+    prompt('The dealer won. Better luck next time!')
+  else
+    prompt("It's a tie!")
+  end
+end
+
+def play_again?
+  loop do
+    prompt("Play again? Press 'y' for yes or 'n' for no")
+    answer = gets.chomp
+    return true if answer.downcase == 'y'
+    return false if answer.downcase == 'n'
+    prompt("I'm sorry, I didn't understand that.")
+  end
+end
+
 def goodbye
   prompt 'Thanks for playing. Goodbye!'
 end
 
-# 1. Initialize deck
 loop do
   deck = {
     '2' => 4,
@@ -111,27 +178,36 @@ loop do
 
   hands = { player: [], dealer: [] }
   scores = { player: 0, dealer: 0 }
+  dealer_wins = false
+  player_wins = false
 
-  # 2. Deal cards to player and dealer
   deal_cards(draw_cards(deck), hands)
   display_hands(hands)
   calculate_score(hands, scores)
-  p scores
 
   loop do
-    # 3. Player turn: hit or stay
-    #   - Repeat until bust or 'stay'
+    player_turn(deck, hands, scores[:player])
+    dealer_wins = true if busted?(scores[:player])
+    break if dealer_wins
 
-    # 4. If player bust, dealer wins
+    dealer_turn(deck, hands, scores)
+    player_wins = true if busted?(scores[:dealer])
+    break if player_wins
 
-    # 5. Dealer turn: hit or stay
-
-    # 6. If dealer bust, player wins
-
-    # 7. Compare cards and declare winner
+    display_hands(hands)
     break
   end
-  break
+
+  calculate_score(hands, scores)
+
+  player_wins if scores[:player] > scores[:dealer]
+  dealer_wins if scores[:dealer] > scores[:player]
+
+  display_winner('dealer') if dealer_wins
+  display_winner('player') if player_wins
+  display_winner('tie') unless player_wins || dealer_wins
+
+  break unless play_again?
 end
 
 goodbye
