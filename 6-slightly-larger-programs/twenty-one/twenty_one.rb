@@ -66,7 +66,7 @@ def draw_cards(deck)
   dealt_cards = []
   until dealt_cards.size == 4
     card = deck.keys.sample
-    next if deck[card] == 0
+    next if deck[card] == 0 # Only 4 of each card in deck
     dealt_cards << card
     deck[card] -= 1
   end
@@ -144,7 +144,7 @@ def busted_message(who)
   end
 end
 
-def update_score(scores, new_score, player)
+def update_score!(scores, new_score, player)
   scores[player] = new_score
 end
 
@@ -161,13 +161,13 @@ def player_turn(deck, hands, scores)
     if answer == '2' # Player chooses to stay
       break
     else
-      hit_me(deck, hands[:player])
+      hit_me!(deck, hands[:player])
       total = get_hand_score(hands[:player])
       display_game_status(hands, answer) # Update so player can see their hand
       break if busted?(total)
     end
   end
-  update_score(scores, total, :player)
+  update_score!(scores, total, :player)
   total
 end
 
@@ -186,7 +186,7 @@ def valid_player_choice?(choice)
   false
 end
 
-def hit_me(deck, hand)
+def hit_me!(deck, hand)
   loop do
     card = deck.keys.sample
     unless deck[card] == 0
@@ -200,11 +200,11 @@ end
 def dealer_turn(deck, hands, scores)
   total = scores[:dealer]
   until total >= DEALER_LIMIT
-    hit_me(deck, hands[:dealer])
+    hit_me!(deck, hands[:dealer])
     total = get_hand_score(hands[:dealer])
     break if busted?(total)
   end
-  update_score(scores, total, :dealer)
+  update_score!(scores, total, :dealer)
   total
 end
 
@@ -250,7 +250,6 @@ def goodbye
   prompt 'Thanks for playing. Goodbye!'
 end
 
-# Main loop
 loop do
   # Initialize deck and refresh variables on new round
   deck = {
@@ -272,6 +271,7 @@ loop do
   scores = { player: 0, dealer: 0 }
   dealer_wins = false
   player_wins = false
+
   busted = nil # Used for final outcome message specificity
 
   # Game starts here
