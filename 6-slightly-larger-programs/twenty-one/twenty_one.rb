@@ -17,6 +17,8 @@ MSG
 
 MAX_POINTS = 21
 
+DEALER_LIMIT = 17
+
 CARD_VALUES = {
   '2' => 2,
   '3' => 3,
@@ -197,7 +199,7 @@ end
 
 def dealer_turn(deck, hands, scores)
   total = scores[:dealer]
-  until total >= 17
+  until total >= DEALER_LIMIT
     hit_me(deck, hands[:dealer])
     total = get_hand_score(hands[:dealer])
     break if busted?(total)
