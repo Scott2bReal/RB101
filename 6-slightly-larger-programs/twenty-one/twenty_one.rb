@@ -1,23 +1,36 @@
-GREETING = "*~ Welcome to Twenty-One! ~*"
-
-EXPLANATION = <<MSG
-***
-  The goal of Twenty-one is to get as close to 21 points as possible, without
-going over. If you go over 21, it's a "bust" and you lose. You will be playing
-against the "dealer". Both you and the dealer are initially dealt 2 cards. You
-can always see all of your cards, but will only see one of the dealer's cards.
-The number cards are worth their face value, face cards are all worth 10 points,
-and aces are worth 11, but are only worth one if they cause the player to bust.
-On your turn you will be prompted to either "hit" or "stay". Hitting draws
-another card from the deck, while staying means you will compare your current
-and with the dealer's hand, after they take their turn.  
-***
-
-MSG
+ROUNDS_TO_WIN = 5
 
 MAX_POINTS = 21
 
 DEALER_LIMIT = 17
+
+GREETING = "*~ Welcome to #{MAX_POINTS}! ~*"
+
+EXPLANATION = <<-MSG
+***
+
+  The goal of #{MAX_POINTS} is to get as close to #{MAX_POINTS} points as possible, without
+going over. If you go over, it's a "bust" and you lose. The player with the
+highest amount of points without going over wins the round.
+
+  The first player to reach #{ROUNDS_TO_WIN} wins is the winner of the match.
+
+  You will be playing against the "dealer". Both you and the dealer are initially
+dealt 2 cards. You can always see all of your cards, but will only see one of
+the dealer's cards.  
+
+  The number cards are worth their face value, face cards are
+all worth 10 points, and aces are worth 11, but are only worth one if they cause
+the player to bust.  
+
+  On your turn you will be prompted to either "hit" or "stay". Hitting draws
+another card from the deck, while staying means you will compare your current
+and with the dealer's hand, after they take their turn.  
+
+***
+
+MSG
+
 
 CARD_VALUES = {
   '2' => 2,
@@ -42,6 +55,10 @@ end
 def stylize(msg)
   puts "\n** #{msg} **"
   print "\n"
+end
+
+def scoreboard_header(msg)
+  puts "      ### #{msg} ###"
 end
 
 def greeting
@@ -236,6 +253,55 @@ def display_winner(player_wins, dealer_wins)
   end
 end
 
+def display_rounds_won(rounds_won)
+  player = rounds_won[:player]
+  dealer = rounds_won[:dealer]
+  scoreboard_header("ROUNDS WON")
+  draw_scoreboard(player, dealer)
+end
+
+def continue?
+  prompt("Press ENTER to continue")
+  answer = gets.chomp
+  return true if answer
+end
+
+def draw_scoreboard(player, dealer)
+  scoreboard = <<-MSG
+  *-----------*-----------*
+  |           |           |
+  | Player: #{player} | Dealer: #{dealer} |
+  |           |           |
+  *-----------*-----------*
+  MSG
+  puts scoreboard
+end
+
+def update_rounds_won!(rounds_won, player_wins, dealer_wins)
+  rounds_won[:player] += 1 if player_wins
+  rounds_won[:dealer] += 1 if dealer_wins
+end
+
+def ultimate_winner?(rounds_won)
+  return true if rounds_won[:player] == ROUNDS_TO_WIN
+  return true if rounds_won[:dealer] == ROUNDS_TO_WIN
+  false
+end
+
+def determine_ultimate_winner(rounds_won)
+  player = rounds_won[:player]
+  dealer = rounds_won[:dealer]
+  player > dealer ? 'player' : 'dealer'
+end
+
+def display_ultimate_winner(winner)
+  if winner == 'player'
+    stylize("Congratulations, you won the whole match!")
+  elsif winner == 'dealer'
+    stylize("The dealer won the match. Better luck next time!")
+  end
+end
+
 def play_again?
   loop do
     prompt("Play again? Press 'y' for yes or 'n' for no")
@@ -250,53 +316,68 @@ def goodbye
   prompt 'Thanks for playing. Goodbye!'
 end
 
+# Match loop
 loop do
-  # Initialize deck and refresh variables on new round
-  deck = {
-    '2' => 4,
-    '3' => 4,
-    '4' => 4,
-    '5' => 4,
-    '6' => 4,
-    '7' => 4,
-    '8' => 4,
-    '9' => 4,
-    'Jack' => 4,
-    'Queen' => 4,
-    'King' => 4,
-    'Ace' => 4
-  }
+  # Only need to reset score at top of match
+  # Everything else happens inside Round loop
+  rounds_won = { player: 0, dealer: 0 }
 
-  hands = { player: [], dealer: [] }
-  scores = { player: 0, dealer: 0 }
-  dealer_wins = false
-  player_wins = false
+  # Round loop
+  loop do
+    # Initialize deck and refresh variables on new round
+    deck = {
+      '2' => 4,
+      '3' => 4,
+      '4' => 4,
+      '5' => 4,
+      '6' => 4,
+      '7' => 4,
+      '8' => 4,
+      '9' => 4,
+      'Jack' => 4,
+      'Queen' => 4,
+      'King' => 4,
+      'Ace' => 4
+    }
 
-  busted = nil # Used for final outcome message specificity
+    hands = { player: [], dealer: [] }
+    scores = { player: 0, dealer: 0 }
+    dealer_wins = false
+    player_wins = false
 
-  # Game starts here
-  greeting
+    busted = nil # Used for final outcome message specificity
 
-  deal_cards(draw_cards(deck), hands)
-  display_game_status(hands)
-  calculate_scores(hands, scores)
+    # Game starts here
+    greeting
 
-  player_turn(deck, hands, scores)
-  dealer_wins = true if busted?(scores[:player])
-  busted = 'player' if dealer_wins
+    deal_cards(draw_cards(deck), hands)
+    display_game_status(hands)
+    calculate_scores(hands, scores)
 
-  dealer_turn(deck, hands, scores) unless dealer_wins
-  player_wins = true if busted?(scores[:dealer])
-  busted = 'dealer' if player_wins
+    player_turn(deck, hands, scores)
+    dealer_wins = true if busted?(scores[:player])
+    busted = 'player' if dealer_wins
 
-  case determine_winner(scores, player_wins, dealer_wins)
-  when 'player wins' then player_wins = true
-  when 'dealer wins' then dealer_wins = true
+    dealer_turn(deck, hands, scores) unless dealer_wins
+    player_wins = true if busted?(scores[:dealer])
+    busted = 'dealer' if player_wins
+
+    case determine_winner(scores, player_wins, dealer_wins)
+    when 'player wins' then player_wins = true
+    when 'dealer wins' then dealer_wins = true
+    end
+
+    display_final_hands(hands, scores, busted)
+    display_winner(player_wins, dealer_wins)
+    update_rounds_won!(rounds_won, player_wins, dealer_wins)
+    display_rounds_won(rounds_won)
+    continue?
+
+
+    break if ultimate_winner?(rounds_won)
   end
 
-  display_final_hands(hands, scores, busted)
-  display_winner(player_wins, dealer_wins)
-
+  display_ultimate_winner(determine_ultimate_winner(rounds_won))
   break unless play_again?
 end
 
