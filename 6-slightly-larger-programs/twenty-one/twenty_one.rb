@@ -30,7 +30,7 @@ CARD_VALUES = {
   'Queen' => 10,
   'King' => 10,
   'Ace' => 11,
-  :ace_1 => 1
+  :low_ace => 1
 }
 
 def prompt(msg)
@@ -77,7 +77,7 @@ def display_game_status(hands, answer=nil, busted=nil)
   prompt action_message(answer) if answer
   stylize busted_message(busted) if busted
   prompt("Dealer has: #{hands[:dealer][0]} and Unknown Card")
-  prompt("You have: #{player_hand}")
+  prompt("You have: #{player_hand} (Total: #{get_hand_score(hands[:player])})")
   print "\n"
 end
 
@@ -98,6 +98,7 @@ def joinor(array, delim, final)
   end
 end
 
+# Helper for joinor
 def all_but_last(array)
   most_words = []
   array.each_with_index do |word, idx|
@@ -106,7 +107,7 @@ def all_but_last(array)
   most_words
 end
 
-def calculate_hand_total(hand)
+def get_hand_score(hand)
   card_values = hand.map { |card| CARD_VALUES[card] }
   total = card_values.sum
   if busted?(total) && card_values.include?(CARD_VALUES['Ace'])
@@ -118,8 +119,9 @@ end
 def calculate_aces(card_values)
   index = 0
   until index == card_values.size - 1
+    # Ace can be 11 or 1, defaults to 11
     if card_values[index] == CARD_VALUES['Ace']
-      card_values[index] = CARD_VALUES[:ace_1]
+      card_values[index] = CARD_VALUES[:low_ace]
     end
     break if card_values.sum <= MAX_POINTS
     index += 1
@@ -128,9 +130,7 @@ def calculate_aces(card_values)
 end
 
 def busted?(score)
-  if score > MAX_POINTS
-    return true
-  end
+  return true if score > MAX_POINTS
   false
 end
 
@@ -148,7 +148,7 @@ end
 
 def calculate_scores(hands, scores)
   hands.keys.each do |hand|
-    scores[hand] = calculate_hand_total(hands[hand])
+    scores[hand] = get_hand_score(hands[hand])
   end
 end
 
@@ -156,12 +156,12 @@ def player_turn(deck, hands, scores)
   total = scores[:player]
   loop do
     answer = player_choice
-    if answer == '2'
+    if answer == '2' # Player chooses to stay
       break
     else
       hit_me(deck, hands[:player])
-      total = calculate_hand_total(hands[:player])
-      display_game_status(hands, answer)
+      total = get_hand_score(hands[:player])
+      display_game_status(hands, answer) # Update so player can see their hand
       break if busted?(total)
     end
   end
@@ -173,12 +173,12 @@ def player_choice
   loop do
     prompt("1) Hit or 2) Stay?")
     answer = gets.chomp
-    return answer if valid_choice?(answer)
+    return answer if valid_player_choice?(answer)
     prompt("Sorry, I didn't understand that")
   end
 end
 
-def valid_choice?(choice)
+def valid_player_choice?(choice)
   return true if choice == '1'
   return true if choice == '2'
   false
@@ -199,7 +199,7 @@ def dealer_turn(deck, hands, scores)
   total = scores[:dealer]
   until total >= 17
     hit_me(deck, hands[:dealer])
-    total = calculate_hand_total(hands[:dealer])
+    total = get_hand_score(hands[:dealer])
     break if busted?(total)
   end
   update_score(scores, total, :dealer)
@@ -209,16 +209,17 @@ end
 def determine_winner(scores, player_wins, dealer_wins)
   player = scores[:player]
   dealer = scores[:dealer]
-  return nil if player_wins || dealer_wins
+  return nil if player_wins || dealer_wins # Already determined if one is true
   return 'player wins' if player > dealer
   return 'dealer wins' if dealer > player
   'tie'
 end
 
 def display_final_hands(hands, scores, busted=nil)
+  greeting
   player_hand = joinor(hands[:player], ', ', 'and')
   dealer_hand = joinor(hands[:dealer], ', ', 'and')
-  busted_message(busted) if busted
+  stylize busted_message(busted) if busted
   prompt("Dealer had: #{dealer_hand}, totaling #{scores[:dealer]}")
   prompt("You had: #{player_hand}, totaling #{scores[:player]}")
 end
@@ -269,6 +270,7 @@ loop do
   scores = { player: 0, dealer: 0 }
   dealer_wins = false
   player_wins = false
+  busted = nil # Used for final outcome message specificity
 
   # Game starts here
   greeting
@@ -279,18 +281,22 @@ loop do
 
   player_turn(deck, hands, scores)
   dealer_wins = true if busted?(scores[:player])
+  busted = 'player' if dealer_wins
 
   dealer_turn(deck, hands, scores) unless dealer_wins
   player_wins = true if busted?(scores[:dealer])
+  busted = 'dealer' if player_wins
 
   case determine_winner(scores, player_wins, dealer_wins)
   when 'player wins' then player_wins = true
   when 'dealer wins' then dealer_wins = true
   end
-  display_final_hands(hands, scores)
+
+  display_final_hands(hands, scores, busted)
   display_winner(player_wins, dealer_wins)
 
   break unless play_again?
 end
 
+clear_screen
 goodbye
