@@ -1,7 +1,5 @@
 ROUNDS_TO_WIN = 5
-
 MAX_POINTS = 21
-
 DEALER_LIMIT = 17
 
 GREETING = "*~ Welcome to #{MAX_POINTS}! ~*"
@@ -20,7 +18,7 @@ dealt 2 cards. You can always see all of your cards, but will only see one of
 the dealer's cards.  
 
   The number cards are worth their face value, face cards are
-all worth 10 points, and aces are worth 11, but are only worth one if they cause
+all worth 10 points, and aces are worth 11, but are only worth 1 if they cause
 the player to bust.  
 
   On your turn you will be prompted to either "hit" or "stay". Hitting draws
@@ -30,7 +28,6 @@ and with the dealer's hand, after they take their turn.
 ***
 
 MSG
-
 
 CARD_VALUES = {
   '2' => 2,
@@ -55,10 +52,6 @@ end
 def stylize(msg)
   puts "\n** #{msg} **"
   print "\n"
-end
-
-def scoreboard_header(msg)
-  puts "      ### #{msg} ###"
 end
 
 def greeting
@@ -90,13 +83,15 @@ def draw_cards(deck)
   dealt_cards
 end
 
-def display_game_status(hands, answer=nil, busted=nil)
-  greeting
-  player_hand = joinor(hands[:player], ', ', 'and')
+# This one is bigger/messier than I'd like, but I think its purpose is clear
+def display_game_status(hands, scores, rounds_won, answer=nil, busted=nil)
+  greeting # Clear screen and display rules. Keeps screen consistent
+  player_hand = joinor(hands[:player], ', ', 'and') # For readability later
+  display_rounds_won(rounds_won)
   prompt action_message(answer) if answer
   stylize busted_message(busted) if busted
   prompt("Dealer has: #{hands[:dealer][0]} and Unknown Card")
-  prompt("You have: #{player_hand} (Total: #{get_hand_score(hands[:player])})")
+  prompt("You have: #{player_hand} (Total: #{scores[:player]})")
   print "\n"
 end
 
@@ -171,7 +166,7 @@ def calculate_scores(hands, scores)
   end
 end
 
-def player_turn(deck, hands, scores)
+def player_turn(deck, hands, scores, rounds_won)
   total = scores[:player]
   loop do
     answer = player_choice
@@ -180,7 +175,8 @@ def player_turn(deck, hands, scores)
     else
       hit_me!(deck, hands[:player])
       total = get_hand_score(hands[:player])
-      display_game_status(hands, answer) # Update so player can see their hand
+      update_score!(scores, total, :player)
+      display_game_status(hands, scores, rounds_won, answer) # Keep screen same
       break if busted?(total)
     end
   end
@@ -234,10 +230,11 @@ def determine_winner(scores, player_wins, dealer_wins)
   'tie'
 end
 
-def display_final_hands(hands, scores, busted=nil)
+def display_final_hands(hands, scores, rounds_won, busted=nil)
   greeting
   player_hand = joinor(hands[:player], ', ', 'and')
   dealer_hand = joinor(hands[:dealer], ', ', 'and')
+  display_rounds_won(rounds_won)
   stylize busted_message(busted) if busted
   prompt("Dealer had: #{dealer_hand}, totaling #{scores[:dealer]}")
   prompt("You had: #{player_hand}, totaling #{scores[:player]}")
@@ -264,6 +261,10 @@ def continue?
   prompt("Press ENTER to continue")
   answer = gets.chomp
   return true if answer
+end
+
+def scoreboard_header(msg)
+  puts "      ### #{msg} ###"
 end
 
 def draw_scoreboard(player, dealer)
@@ -324,7 +325,7 @@ loop do
 
   # Round loop
   loop do
-    # Initialize deck and refresh variables on new round
+    # Initialize deck and refresh variables for new round
     deck = {
       '2' => 4,
       '3' => 4,
@@ -351,10 +352,10 @@ loop do
     greeting
 
     deal_cards(draw_cards(deck), hands)
-    display_game_status(hands)
     calculate_scores(hands, scores)
+    display_game_status(hands, scores, rounds_won)
 
-    player_turn(deck, hands, scores)
+    player_turn(deck, hands, scores, rounds_won)
     dealer_wins = true if busted?(scores[:player])
     busted = 'player' if dealer_wins
 
@@ -367,12 +368,10 @@ loop do
     when 'dealer wins' then dealer_wins = true
     end
 
-    display_final_hands(hands, scores, busted)
-    display_winner(player_wins, dealer_wins)
     update_rounds_won!(rounds_won, player_wins, dealer_wins)
-    display_rounds_won(rounds_won)
+    display_final_hands(hands, scores, rounds_won, busted)
+    display_winner(player_wins, dealer_wins)
     continue?
-
 
     break if ultimate_winner?(rounds_won)
   end
