@@ -132,7 +132,7 @@ end
 
 def calculate_aces(card_values)
   index = 0
-  until index == card_values.size - 1
+  until index == card_values.size
     # Ace can be 11 or 1, defaults to 11
     if card_values[index] == CARD_VALUES['Ace']
       card_values[index] = CARD_VALUES[:low_ace]
