@@ -85,8 +85,8 @@ end
 
 # This one is bigger/messier than I'd like, but I think its purpose is clear
 def display_game_status(hands, scores, rounds_won, answer=nil, busted=nil)
-  greeting # Clear screen and display rules. Keeps screen consistent
-  player_hand = joinor(hands[:player], ', ', 'and') # For readability later
+  greeting
+  player_hand = joinor(hands[:player], ', ', 'and')
   display_rounds_won(rounds_won)
   prompt action_message(answer) if answer
   stylize busted_message(busted) if busted

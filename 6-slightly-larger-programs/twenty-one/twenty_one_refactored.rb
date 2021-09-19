@@ -1,10 +1,10 @@
 require 'pry'
 
 ROUNDS_TO_WIN = 5
-
 MAX_POINTS = 21
-
 DEALER_LIMIT = 17
+INITIAL_DEAL = 2
+NUMBER_OF_PLAYERS = 2
 
 GREETING = "*~ Welcome to #{MAX_POINTS}! ~*"
 
@@ -82,10 +82,10 @@ end
 
 def draw_cards(deck)
   drawn_cards = []
-  until drawn_cards.size == 4
+  until drawn_cards.size == INITIAL_DEAL * NUMBER_OF_PLAYERS
     card = Hash.new('')
     card[:card] = deck.keys.sample
-    next if deck[card[:card]][:amount] == 0 # Only 4 of each card in deck
+    next if deck[card[:card]][:amount] == 0
     assign_suit!(deck, card)
     drawn_cards << card
     deck[card[:card]][:amount] -= 1
@@ -99,14 +99,15 @@ def assign_suit!(deck, card)
   card
 end
 
-def display_game_status(hands, answer=nil, busted=nil)
+def display_game_status(hands, scores, rounds_won, answer=nil, busted=nil)
   greeting
   player_hand = joinor(translate_hand(hands[:player]), ', ', 'and')
   dealer_hand = translate_hand(hands[:dealer])
+  display_rounds_won(rounds_won)
   prompt action_message(answer) if answer
   stylize busted_message(busted) if busted
   prompt("Dealer has: #{dealer_hand.first} and ???")
-  prompt("You have: #{player_hand} (Total: #{get_hand_score(hands[:player])})")
+  prompt("You have: #{player_hand} (Total: #{scores[:player]})")
   print "\n"
 end
 
@@ -125,7 +126,6 @@ def action_message(answer)
   return 'You chose to stay' if answer == '2'
 end
 
-# Makes listing arrays nice and pretty
 def joinor(array, delim, final)
   most_words = all_but_last(array)
   if most_words.empty?
@@ -137,7 +137,6 @@ def joinor(array, delim, final)
   end
 end
 
-# Helper for joinor
 def all_but_last(array)
   most_words = []
   array.each_with_index do |word, idx|
@@ -190,7 +189,7 @@ def calculate_scores(hands, scores)
   end
 end
 
-def player_turn(deck, hands, scores)
+def player_turn(deck, hands, scores, rounds_won)
   total = scores[:player]
   loop do
     answer = player_choice
@@ -199,7 +198,8 @@ def player_turn(deck, hands, scores)
     else
       hit_me!(deck, hands[:player])
       total = get_hand_score(hands[:player])
-      display_game_status(hands, answer)
+      update_score!(scores, total, :player)
+      display_game_status(hands, scores, rounds_won, answer)
       break if busted?(total)
     end
   end
@@ -255,10 +255,11 @@ def determine_winner(scores, player_wins, dealer_wins)
   'tie'
 end
 
-def display_final_hands(hands, scores, busted=nil)
+def display_final_hands(hands, scores, rounds_won, busted=nil)
   greeting
   player_hand = joinor(translate_hand(hands[:player]), ', ', 'and')
   dealer_hand = joinor(translate_hand(hands[:dealer]), ', ', 'and')
+  display_rounds_won(rounds_won)
   stylize busted_message(busted) if busted
   prompt("Dealer had: #{dealer_hand}, totaling #{scores[:dealer]}")
   prompt("You had: #{player_hand}, totaling #{scores[:player]}")
@@ -343,8 +344,6 @@ loop do
 
   # Round loop
   loop do
-    # Initialize deck and refresh variables on new round
-    # \u2665 = Heart, \u2666 = Diamond, \u2663 = Club, \u2660 = Spade
     deck = {
       '2' => { amount: 4, suits: %w(♠ ♥ ♣ ♦) },
       '3' => { amount: 4, suits: %w(♠ ♥ ♣ ♦) },
@@ -367,12 +366,11 @@ loop do
 
     busted = nil
 
-    # Game starts here
     deal_cards(draw_cards(deck), hands)
-    display_game_status(hands)
     calculate_scores(hands, scores)
+    display_game_status(hands, scores, rounds_won)
 
-    player_turn(deck, hands, scores)
+    player_turn(deck, hands, scores, rounds_won)
     dealer_wins = true if busted?(scores[:player])
     busted = 'player' if dealer_wins
 
@@ -385,10 +383,9 @@ loop do
     when 'dealer wins' then dealer_wins = true
     end
 
-    display_final_hands(hands, scores, busted)
-    display_winner(player_wins, dealer_wins)
     update_rounds_won!(rounds_won, player_wins, dealer_wins)
-    display_rounds_won(rounds_won)
+    display_final_hands(hands, scores, rounds_won, busted)
+    display_winner(player_wins, dealer_wins)
     continue?
 
     break if ultimate_winner?(rounds_won)
