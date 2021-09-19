@@ -1,5 +1,3 @@
-require 'pry'
-
 ROUNDS_TO_WIN = 5
 MAX_POINTS = 21
 DEALER_LIMIT = 17
