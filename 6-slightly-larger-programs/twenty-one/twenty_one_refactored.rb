@@ -154,7 +154,7 @@ end
 
 def calculate_aces(card_values)
   index = 0
-  until index == card_values.size - 1
+  until index == card_values.size
     if card_values[index] == CARD_VALUES['Ace']
       card_values[index] = CARD_VALUES[:low_ace]
     end
