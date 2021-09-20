@@ -1,5 +1,7 @@
 =begin
 
+TODO: Further exploration
+
 Problem: Write a method that returns a list of all substrings of a string that
 are palindromic. That is, each substring must consist of the same sequence of
 characters forwards as it does backwards. The return value should be arranged in
