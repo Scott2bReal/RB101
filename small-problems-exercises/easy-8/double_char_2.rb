@@ -21,11 +21,8 @@ def double_consonants(string)
   chars = string.chars
   final_array = []
   chars.each do |char|
-    if CONSONANTS.include?(char.downcase)
-      2.times { final_array << char }
-    else
-      final_array << char
-    end
+    final_array << char
+    final_array << char if CONSONANTS.include?(char.downcase)
   end
   final_array.join('')
 end
