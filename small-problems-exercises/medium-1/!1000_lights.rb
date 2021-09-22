@@ -1,4 +1,4 @@
-require 'pry'
+# TODO Further exploration
 
 # Problem: You have a bank of switches before you, numbered from 1 to n. Each
 # switch is connected to exactly one light that is initially off. You walk down
@@ -29,7 +29,7 @@ require 'pry'
 #
 # Algorithm:
 # Initialize lights hash, default value is 'off'
-# initialize counter at 1
+# intialize step = 1
 # until counter > n do
 #   lights[n * counter] = toggle(SUBPROCESS)
 #   counter += 1
@@ -40,16 +40,25 @@ def toggle(lights, light)
   return 'on' if lights[light] == 'off'
 end
 
+def walk_thru(total, step, lights)
+  counter = step
+  until counter > total
+    lights[counter] = toggle(lights, (counter))
+    counter += step
+  end
+end
+
 def why_is_this(total)
   lights = Hash.new('off')
-  counter = 1
-  until counter > total
-    lights[counter * total] 
+  step = 1
+  until step > total
+    walk_thru(total, step, lights)
+    step += 1
   end
-  lights.each { |light, status| lights_on << light if status == 'on' }
-  lights_on = []
+  lights.keys.select { |light| light if lights[light] == 'on' }
 end
 
 p why_is_this(1)
 p why_is_this(5)
 p why_is_this(10)
+p why_is_this(1000)
