@@ -14,10 +14,8 @@ arr = []
 
 hsh.each_value do |info|
   if info[:type] == 'fruit'
-    arr << info[:colors].map do |color|
-      color.capitalize
-    end
-  else
+    arr << info[:colors].map(&:capitalize)
+  elsif info[:type] == 'vegetable'
     arr << info[:size].upcase
   end
 end
