@@ -7,12 +7,17 @@ arr = [
   { e: [8], f: [6, 10] }
 ]
 
+# evens = arr.select do |hash|
+#   hash.all? do |_, value|
+#     value.all? do |num|
+#       num.even?
+#     end
+#   end
+# end
+
+# Refactor
 evens = arr.select do |hash|
-  hash.all? do |_, value|
-    value.all? do |num|
-      num.even?
-    end
-  end
+  hash.values.all? { |value| value.all?(&:even?) }
 end
 
 p evens
