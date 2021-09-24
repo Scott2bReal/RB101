@@ -20,4 +20,42 @@
 # Data Structure: hash
 #
 # Algorithm:
-#   If all three sides equal return :equilateral
+#   Iscoseles:
+#     If two sides are equal
+#       Is the sum of the two smallest sides > than the biggest?
+#
+def triangle(side1, side2, side3)
+  triangle = [side1, side2, side3]
+  return :invalid if triangle.any?(0)
+  return :equilateral if equilateral?(triangle)
+  return :isosceles if isosceles?(triangle)
+  return :scalene if scalene?(triangle)
+  :invalid
+end
+
+def equilateral?(triangle)
+  return true if triangle.uniq.size == 1
+  false
+end
+
+def isosceles?(triangle)
+  if triangle.uniq.size == 2
+    sorted = triangle.sort
+    return true if (sorted[2] + sorted[1]) > sorted[0]
+  end
+  false
+end
+
+def scalene?(triangle)
+  if triangle.uniq.size == 3
+    sorted = triangle.sort
+    return true if (sorted[2] + sorted[1]) > sorted[0]
+  end
+  false
+end
+
+puts triangle(3, 3, 3) == :equilateral
+puts triangle(3, 3, 1.5) == :isosceles
+puts triangle(3, 4, 5) == :scalene
+puts triangle(0, 3, 3) == :invalid
+puts triangle(3, 1, 1) == :invalid
