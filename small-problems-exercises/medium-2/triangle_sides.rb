@@ -41,7 +41,7 @@ end
 def isosceles?(triangle)
   if triangle.uniq.size == 2
     sorted = triangle.sort
-    return true if (sorted[2] + sorted[1]) > sorted[0]
+    return true if (sorted[0] + sorted[1]) > sorted[2]
   end
   false
 end
@@ -49,7 +49,7 @@ end
 def scalene?(triangle)
   if triangle.uniq.size == 3
     sorted = triangle.sort
-    return true if (sorted[2] + sorted[1]) > sorted[0]
+    return true if (sorted[0] + sorted[1]) > sorted[2]
   end
   false
 end
