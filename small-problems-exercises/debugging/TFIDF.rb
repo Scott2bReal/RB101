@@ -1,5 +1,3 @@
-require 'pry'
-
 # A friend of yours wants to build a basic search engine and starts reading up
 # on information extraction. He decides to try a simple implementation of
 # TF-IDF, a measure of the information content a term holds for a particular
@@ -13,7 +11,6 @@ require 'pry'
 # the document, but decreases with the frequency of the word across documents)
 
 def tfidf(term, document, documents)
-  binding.pry
   tf(term, document) * idf(term, documents)
 end
 
@@ -21,7 +18,6 @@ end
 # the number of times a term occurs in a document
 
 def tf(term, document)
-  binding.pry
   document.split(/[\s-]/).count { |word| word.downcase == term }
 end
 
@@ -32,10 +28,9 @@ end
 
 def idf(term, documents)
   number_of_documents = documents.length
-  binding.pry
   number_of_documents_with_term = documents.count { |d| tf(term, d) > 0 }
 
-  Math.log(number_of_documents / number_of_documents_with_term)
+  Math.log(number_of_documents.to_f / number_of_documents_with_term.to_f)
 end
 
 # Very simple example
@@ -100,3 +95,8 @@ puts tfidf("mastery", document3, documents) # ~ 3.3
 puts tfidf("some", document1, documents) # 0
 puts tfidf("some", document2, documents) # ~ 0.4
 puts tfidf("some", document3, documents) # ~ 0.4
+
+# The logic seemed sound except for the fact that division by 0 is a
+# possibility, which would crash the whole program. The idf method was giving
+# strange results so I coerced the values in the final line to floats and that
+# produced the expected results
