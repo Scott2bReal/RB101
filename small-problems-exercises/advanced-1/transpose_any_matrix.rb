@@ -1,14 +1,20 @@
 # Problem: Modify the transpose method from a previous exercise to transpose a
 # matrix of any size
+#
+# Input: Matrix
+# Output: Transposed Matrix
+#
+# Data Structure: Array
+#
+# Algorithm:
+#   Init new matrix, must be same size as first matrix
 require 'pry'
 
 def transpose(matrix)
-  new_matrix_size = matrix[0].size
-  new_matrix = Array.new(new_matrix_size, [])
-  matrix.each_with_index do |array, x_idx|
-    array.each_with_index do |_, y_idx|
-      new_matrix[y_idx][x_idx] = matrix[x_idx][y_idx]
-    end
+  new_matrix = []
+  (0..matrix.size).each do |column_idx|
+    new_row = (0..matrix.size).map { |row_idx| matrix[row_idx][column_idx] }
+    new_matrix << new_row
   end
   new_matrix
 end
@@ -18,9 +24,9 @@ end
 #   [4, 7, 2],
 #   [3, 9, 6]
 # ]
-# 
+#
 # new_matrix = transpose(matrix)
-# 
+#
 # p new_matrix == [[1, 4, 3], [5, 7, 9], [8, 2, 6]]
 # p matrix == [[1, 5, 8], [4, 7, 2], [3, 9, 6]]
 
