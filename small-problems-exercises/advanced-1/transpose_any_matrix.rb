@@ -12,8 +12,8 @@ require 'pry'
 
 def transpose(matrix)
   new_matrix = []
-  (0..matrix.size).each do |column_idx|
-    new_row = (0..matrix.size).map { |row_idx| matrix[row_idx][column_idx] }
+  (0..2).each do |column_idx|
+    new_row = (0..2).map { |row_idx| matrix[row_idx][column_idx] }
     new_matrix << new_row
   end
   new_matrix

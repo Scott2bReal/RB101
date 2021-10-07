@@ -1,5 +1,3 @@
-require 'pry'
-
 def crunch(string)
   final_string = ''
   index = 0
