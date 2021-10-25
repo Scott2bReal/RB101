@@ -24,28 +24,23 @@ Output: Number of letters needed to remove to make two words anagrams
 Data Structure: Array
 
 Algorithm:
-  Init counter = 0
-  reject any chars that don't appear in other string
-  add the size of that reject array to counter
+  init total_removed
+  init alphabet
+  for each letter in alphabet
+    increment total_removed by the abs value of the difference between count of
+    letter in string1 vs. string2
 
 =end
 
 def anagram_difference(string1, string2)
-  counter = 0
-  rejected1 = string1.chars.reject { |char| string2.chars.include?(char) }
-  rejected2 = string2.chars.reject { |char| string1.chars.include?(char) }
-  counter += rejected1.size + rejected2.size
-  letters1 = string1.chars.delete_if { |letter| rejected1.include?(letter) }.sort
-  letters2 = string2.chars.delete_if { |letter| rejected2.include?(letter) }.sort
-  if letters1.size != letters2.size
-    array = [letters1, letters2].sort_by { |arr| arr.size }
-    while array[0].size > array[1].size
-      array[0].pop
-      p array[0]
-      counter += 1
-    end
+  total_removed = 0
+  alphabet = %w(a b c d e f g h i j k l m n o p q r s t u v w x y z)
+
+  alphabet.each do |letter|
+    total_removed += (string1.count(letter) - string2.count(letter)).abs
   end
-  counter
+
+  total_removed
 end
 
 p anagram_difference('', '') == 0
