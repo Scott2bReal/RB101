@@ -13,21 +13,26 @@ Output: Mininum moves for a knight to move from first position to second
 Rules:
   - Board is 8x8
   - Knight can't move off board
+  - Knight can either move vert 2, horizontal 1 or vert 1, horizontal 2
 Q's:
   - Input validation?? (going to ignore for now)
 
 Data Structure: Array
 
+Brainstorm/thoughts:
+
 Algorithm:
   Init current_position = start
-  Init out_of_bounds = array of non-possible coords (i, 9)
-  until current_position == end or current_position includes out_of_bounds
+  Init steps = 0
+  Init max_coords = array of non-possible coords (i, 9)
+
 
 =end
 
 def knight(start, finish)
-  current_position = start
-  out_of_bounds = ['i', '9']
+  current_position = start.chars
+  steps = 0
+  max_coords = ['i', '9']
 end
 
 p knight('a3', 'b5') == 1
