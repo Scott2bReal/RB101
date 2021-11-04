@@ -17,14 +17,28 @@ Data Structure: Array
 
 Algorithm:
   Split string into words
-  if words size is 1 then return string
-  init return array
+  loop do
+    make nested array where words are grouped in pairs
+    map that array to reverse and then combine words
+    break if that array size == 1
 
 =end
 
 def reverse_and_combine_text(string)
   words = string.split(' ')
-  return string if words.size == 1
+  return words[0] if words.size == 1
+  word_pairs = []
+  loop do
+    word_pairs = []
+    words.each_with_index do |word, idx|
+      break if idx == words.size - 1
+      word_pairs << [word, words[idx + 1]]
+    end
+    break if word_pairs.size == 1
+    words = word_pairs.map { |pair| pair.map(&:reverse).join('') }
+  end
+  p word_pairs.join('')
+  word_pairs.join('')
 end
 
 p reverse_and_combine_text("abc def") == "cbafed"
