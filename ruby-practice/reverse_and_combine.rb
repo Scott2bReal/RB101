@@ -18,9 +18,14 @@ Data Structure: Array
 Algorithm:
   Split string into words
   loop do
-    make nested array where words are grouped in pairs
+    make nested array where words are grouped in pairs SUBPROCESS
     map that array to reverse and then combine words
     break if that array size == 1
+
+  Make Pairs Algorithm
+    init index
+    half the size of the array times, execute
+      
 
 =end
 
@@ -29,16 +34,23 @@ def reverse_and_combine_text(string)
   return words[0] if words.size == 1
   word_pairs = []
   loop do
-    word_pairs = []
-    words.each_with_index do |word, idx|
-      break if idx == words.size - 1
-      word_pairs << [word, words[idx + 1]]
-    end
-    break if word_pairs.size == 1
+    break if words.size == 1
+    word_pairs = make_pairs(words)
     words = word_pairs.map { |pair| pair.map(&:reverse).join('') }
   end
   p word_pairs.join('')
-  word_pairs.join('')
+  words.join('')
+end
+
+def make_pairs(array)
+  index = 0
+  pairs = []
+  (array.size / 2).times do
+    pairs << [array[index], array[index + 1]]
+    index += 2
+  end
+  pairs << [array.last] if array.size.odd?
+  pairs
 end
 
 p reverse_and_combine_text("abc def") == "cbafed"
