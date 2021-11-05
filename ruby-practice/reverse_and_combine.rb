@@ -38,7 +38,6 @@ def reverse_and_combine_text(string)
     word_pairs = make_pairs(words)
     words = word_pairs.map { |pair| pair.map(&:reverse).join('') }
   end
-  p word_pairs.join('')
   words.join('')
 end
 
