@@ -24,7 +24,23 @@ children, i.e. "aAbaBb" => "AaaBbb".
 
 https://www.codewars.com/kata/58539230879867a8cd00011c/train/ruby
 
+Input: String containing only letters. Uppercase letters are unique
+Output: String sorted where uppercase letters come first, alphabetical by letter
+
+Data Structure: Hash, Array
+
+Algorithm:
+  - Split string into chars
+  - group chars by letter
+  - For each array in values (map)
+    - sort
+  - Flatten and join values
+
 =end
+
+def find_children(string)
+  string.chars.group_by(&:downcase).values.map(&:sort).sort_by { |arr| arr[0] }.flatten.join('')
+end
 
 p find_children("abBA") == "AaBb"
 
