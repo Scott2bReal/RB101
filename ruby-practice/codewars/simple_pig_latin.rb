@@ -1,3 +1,4 @@
+
 # Problem: Move the first letter of each word to the end of it, then add 'ay' to
 # the end of the word. Leave punctuation untouched
 #
@@ -31,3 +32,8 @@ def pig_it(string)
   end
   pigged_words.join(' ')
 end
+
+p pig_it("O tempora o mores !") == "Oay emporatay oay oresmay !"
+p pig_it('Hello world !') == 'elloHay orldway !'
+p pig_it('Pig latin is cool') == 'igPay atinlay siay oolcay'
+p pig_it('This is my string') == 'hisTay siay ymay tringsay'
