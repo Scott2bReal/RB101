@@ -30,11 +30,8 @@ end
 
 def rotate_rightmost_digits(num, chunk)
   digits = num.digits.reverse
-  last_digits = digits.slice!(-1, chunk)
-  p last_digits
-  last_digits = rotate_array(last_digits)
-  p last_digits
-  p [digits + last_digits].join.to_i
+  digits[-chunk..-1] = rotate_array(digits[-chunk..-1])
+  digits.join('').to_i
 end
 
 p rotate_rightmost_digits(735291, 1) == 735291

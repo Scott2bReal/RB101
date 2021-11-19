@@ -29,16 +29,41 @@ Data Structure: array
 Algorithm:
   Split string into words
   For each word
+    pass to fix_word method 
+  Join words array delim ' '
+
+  Fix word method:
     split word into chars
+    pass chars to fix_first_char method, reassign chars to return value
+    for each character, if character is a number then push to first_char array
+    delete chars if numbers
 
 =end
 
-def decipher_this(string)
-  words = string.split(' ')
-
+def fix_word(word)
+  chars = fix_first_char(word.chars)
+  chars[1], chars[-1] = chars[-1], chars[1]
+  chars.join('')
 end
 
-p decipher_this("65 119esi 111dl 111lw 108dvei 105n 97n 111ka") #== "A wise old owl lived in an oak"
+def fix_first_char(chars)
+  first_char = []
+  fixed = []
+  chars.each do |char|
+    char.match?(/[0-9]/) ? first_char << char : fixed << char
+  end
+  fixed.unshift(first_char.join.to_i.chr)
+end
+
+def decipher_this(string)
+  words = string.split(' ')
+  deciphered_words = words.map do |word|
+    fix_word(word)
+  end
+  deciphered_words.join(' ')
+end
+
+p decipher_this("65 119esi 111dl 111lw 108dvei 105n 97n 111ka") == "A wise old owl lived in an oak"
 
 p decipher_this("84eh 109ero 104e 115wa 116eh 108sse 104e 115eokp") == "The more he saw the less he spoke"
 
