@@ -55,29 +55,25 @@ Algorithm:
     index = 0 if index == array.size - 1
 
 =end
-require 'pry'
 
 def josephus(array, step_size)
   index = 0
   counter = 1
   executed = []
+  return executed if array.empty?
   loop do
-    binding.pry
+    index = 0 if index == array.size
     if counter == step_size
-      binding.pry
       executed << array.delete_at(index)
       break if array.empty?
-      counter = 0
-      index -= 1 unless index == 0
+      counter = 1
     else
-      binding.pry
       index += 1
       counter += 1
-      index = 0 if index == array.size
     end
   end
   executed
 end
 
-p josephus((1..10).to_a, 1) #== (1..10).to_a
-p josephus((1..10).to_a, 2) #== [2, 4, 6, 8, 10, 3, 7, 1, 9, 5]
+p josephus((1..10).to_a, 1) == (1..10).to_a
+p josephus((1..10).to_a, 2) == [2, 4, 6, 8, 10, 3, 7, 1, 9, 5]
