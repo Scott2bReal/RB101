@@ -27,4 +27,12 @@ Rotated counter-clockwise it would looks like this:
   [2, 5, 8],
   [1, 4, 7]]
 
+Input: Array matrix
+Output: Rotated array matrix
+
+Data Structure: Hash???
+
+Algorithm:
+  Make hash containing
+
 =end
