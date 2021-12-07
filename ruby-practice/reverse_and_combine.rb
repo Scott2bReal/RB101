@@ -29,28 +29,79 @@ Algorithm:
 
 =end
 
-def reverse_and_combine_text(string)
-  words = string.split(' ')
-  return words[0] if words.size == 1
-  word_pairs = []
-  loop do
-    break if words.size == 1
-    word_pairs = make_pairs(words)
-    words = word_pairs.map { |pair| pair.map(&:reverse).join('') }
-  end
-  words.join('')
+# Second Go (PEDAC Included)
+=begin
+
+Input: A string containing space separated words
+Output: That string with words reversed and combined
+
+Rules:
+  - Each word is individually reversed, then combined with other word in pair
+  - Single words are reversed
+  
+Algorithm:
+
+loop
+  Make an array words set to splitting string by ' '
+  loop
+  return joined words array if words array only contains one element
+  Iterate through words array by slice size of 2, save as pairs
+  Iterate through the pairs array
+    For each pair in pairs
+    Iterate thru that pair
+      reverse both words!
+  Iterate through pairs again, and join each pair using map to make new array, and reassign words to that new array
 end
 
-def make_pairs(array)
-  index = 0
-  pairs = []
-  (array.size / 2).times do
-    pairs << [array[index], array[index + 1]]
-    index += 2
+=end
+
+def reverse_and_combine_text(string)
+  words = string.split(' ')
+  loop do
+    pairs = []
+    return words.join('') if words.size == 1
+    
+    words.each_slice(2) do |slice|
+      pairs << slice
+    end
+    
+    pairs.each do |pair|
+      pair.each do |word|
+        word.reverse!
+      end
+    end
+    
+    words = pairs.map do |pair|
+      pair.join('')
+    end
+    
   end
-  pairs << [array.last] if array.size.odd?
-  pairs
 end
+
+# Initial Solution
+
+#def reverse_and_combine_text(string)
+  #words = string.split(' ')
+  #return words[0] if words.size == 1
+  #word_pairs = []
+  #loop do
+    #break if words.size == 1
+    #word_pairs = make_pairs(words)
+    #words = word_pairs.map { |pair| pair.map(&:reverse).join('') }
+  #end
+  #words.join('')
+#end
+
+#def make_pairs(array)
+  #index = 0
+  #pairs = []
+  #(array.size / 2).times do
+    #pairs << [array[index], array[index + 1]]
+    #index += 2
+  #end
+  #pairs << [array.last] if array.size.odd?
+  #pairs
+#end
 
 p reverse_and_combine_text("abc def") == "cbafed"
 
